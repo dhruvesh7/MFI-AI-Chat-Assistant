@@ -9,3 +9,5 @@ pypdf
 requests
 beautifulsoup4
 types-beautifulsoup4
+fastapi
+uvicorn
