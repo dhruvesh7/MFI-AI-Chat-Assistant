@@ -1154,8 +1154,6 @@
               class="chip chip-info">Info</span>Hiring process</button></li>
         <li><button onclick="sendQuick('What technologies does Money Forward India use?')"><span
               class="chip chip-info">Info</span>Tech stack</button></li>
-        <li><button onclick="sendQuick('Does MFI comply with DPDP Act 2023?')"><span
-              class="chip chip-policy">Policy</span>DPDP Act compliance</button></li>
       </ul>
 
       <div class="sidebar-footer">
@@ -1266,7 +1264,7 @@
     let isLoading = false;
 
     // ── Backend config ──
-    const API_BASE = '';
+    const API_BASE = window.location.protocol === 'file:' ? 'http://127.0.0.1:8000' : '';
 
     // ── Mobile sidebar toggle ──
     function openSidebar() {

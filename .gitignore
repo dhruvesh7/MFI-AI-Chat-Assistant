@@ -1,0 +1,6 @@
+__pycache__/
+vector_db/
+.venv/
+.env
+*.log
+git_status.txt
