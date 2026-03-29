@@ -1,0 +1,1474 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="theme-color" content="#ee8133" />
+  <title>Money Forward India — AI Assistant</title>
+  <meta name="description" content="Ask questions about Money Forward India — jobs, policies, culture, and more." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Lato:wght@300;400;700&family=Poppins:wght@400;500;600&display=swap"
+    rel="stylesheet" />
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --orange: #ee8133;
+      --orange-hover: #d97129;
+      --orange-light: #fdf1e7;
+      --orange-glow: rgba(238, 129, 51, 0.15);
+      --blue-bg: #ebf9ff;
+      --blue-light: #d4f1fd;
+      --white: #ffffff;
+      --gray-50: #f8f9fa;
+      --gray-100: #f1f3f5;
+      --gray-200: #e9ecef;
+      --gray-300: #dee2e6;
+      --gray-400: #ced4da;
+      --gray-500: #adb5bd;
+      --gray-600: #868e96;
+      --gray-700: #4c4c4c;
+      --gray-800: #343a40;
+      --gray-900: #212529;
+      --text-primary: #2d2d2d;
+      --text-secondary: #4c4c4c;
+      --text-muted: #868e96;
+      --border: rgba(0, 0, 0, 0.08);
+      --border-mid: rgba(0, 0, 0, 0.12);
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+      --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
+      --shadow-lg: 0 12px 48px rgba(0, 0, 0, 0.1);
+      --shadow-orange: 0 4px 14px rgba(238, 129, 51, 0.3);
+      --radius: 16px;
+      --radius-sm: 10px;
+      --radius-xs: 6px;
+      --font-heading: 'Montserrat', system-ui, sans-serif;
+      --font-body: 'Lato', system-ui, sans-serif;
+      --font-ui: 'Poppins', system-ui, sans-serif;
+      --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --safe-left: env(safe-area-inset-left, 0px);
+      --safe-right: env(safe-area-inset-right, 0px);
+    }
+
+    html,
+    body {
+      height: 100%;
+      background: var(--gray-50);
+      font-family: var(--font-body);
+      color: var(--text-primary);
+      font-size: 15px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow: hidden;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    /* ── Layout ── */
+    .shell {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      height: 100vh;
+      height: 100dvh;
+      max-width: 1440px;
+      margin: 0 auto;
+      background: var(--white);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      background: var(--white);
+      border-right: 1px solid var(--gray-200);
+      overflow: hidden;
+    }
+
+    .sidebar-header {
+      padding: 24px 24px 20px;
+      border-bottom: 1px solid var(--gray-200);
+      background: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sidebar-header-left {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .logo-row {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 0;
+    }
+
+    .logo-row img {
+      height: 32px;
+      width: auto;
+    }
+
+    .tagline {
+      font-family: var(--font-ui);
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 500;
+      margin-top: 8px;
+      padding-left: 2px;
+    }
+
+    /* ── Mobile sidebar close button ── */
+    .sidebar-close-btn {
+      display: none;
+      width: 36px;
+      height: 36px;
+      border: none;
+      background: var(--gray-100);
+      border-radius: 10px;
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: var(--text-secondary);
+      transition: all var(--transition);
+    }
+
+    .sidebar-close-btn:hover {
+      background: var(--gray-200);
+    }
+
+    .sidebar-close-btn svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .sidebar-section {
+      padding: 20px 24px 10px;
+      font-family: var(--font-ui);
+      font-size: 10px;
+      color: var(--text-muted);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .quick-list {
+      list-style: none;
+      padding: 0 12px;
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .quick-list::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .quick-list::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .quick-list::-webkit-scrollbar-thumb {
+      background: var(--gray-300);
+      border-radius: 10px;
+    }
+
+    .quick-list li {
+      margin-bottom: 2px;
+    }
+
+    .quick-list li button {
+      width: 100%;
+      text-align: left;
+      background: none;
+      border: none;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-body);
+      font-size: 13px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: background var(--transition), color var(--transition);
+      line-height: 1.45;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .quick-list li button:hover {
+      background: var(--orange-light);
+      color: var(--orange);
+    }
+
+    .quick-list li button:active {
+      transform: scale(0.98);
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      font-family: var(--font-ui);
+      font-size: 9px;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      flex-shrink: 0;
+      text-transform: uppercase;
+    }
+
+    .chip-jobs {
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+
+    .chip-policy {
+      background: #e3f2fd;
+      color: #1565c0;
+    }
+
+    .chip-info {
+      background: var(--orange-light);
+      color: var(--orange);
+    }
+
+    .sidebar-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--gray-200);
+      font-family: var(--font-ui);
+      font-size: 12px;
+      color: var(--text-muted);
+      background: var(--gray-50);
+    }
+
+    .status-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .status-dot {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #4caf50;
+      animation: pulse 2s infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.35;
+      }
+    }
+
+    .refresh-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: var(--white);
+      border: 1px solid var(--gray-300);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-family: var(--font-ui);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      margin-top: 10px;
+      width: 100%;
+      transition: all var(--transition);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .refresh-btn:hover {
+      border-color: var(--orange);
+      color: var(--orange);
+      background: var(--orange-light);
+    }
+
+    .refresh-btn:active {
+      transform: scale(0.98);
+    }
+
+    /* ── Mobile overlay backdrop ── */
+    .sidebar-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 98;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      -webkit-backdrop-filter: blur(2px);
+      backdrop-filter: blur(2px);
+    }
+
+    .sidebar-backdrop.active {
+      opacity: 1;
+    }
+
+    /* ── Hamburger / menu toggle ── */
+    .menu-toggle {
+      display: none;
+      width: 40px;
+      height: 40px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+      border-radius: 10px;
+      transition: background var(--transition);
+      flex-shrink: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .menu-toggle:hover {
+      background: var(--gray-100);
+    }
+
+    .menu-toggle svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    /* ── Main chat area ── */
+    .chat-area {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden;
+      background: var(--gray-50);
+    }
+
+    .chat-header {
+      padding: 18px 32px;
+      border-bottom: 1px solid var(--gray-200);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+      background: var(--white);
+      gap: 12px;
+    }
+
+    .chat-header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .chat-header-icon {
+      width: 40px;
+      height: 40px;
+      background: none;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .chat-header-icon svg {
+      width: 40px;
+      height: 40px;
+    }
+
+    .chat-header h1 {
+      font-family: var(--font-heading);
+      font-size: 18px;
+      color: var(--text-primary);
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .chat-header h1 span {
+      font-weight: 400;
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-left: 4px;
+    }
+
+    .header-meta {
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    .model-badge {
+      background: var(--orange-light);
+      color: var(--orange);
+      font-family: var(--font-ui);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 20px;
+      letter-spacing: 0.01em;
+      white-space: nowrap;
+    }
+
+    /* ── Messages ── */
+    .messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 28px 32px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .messages::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    .messages::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .messages::-webkit-scrollbar-thumb {
+      background: var(--gray-300);
+      border-radius: 10px;
+    }
+
+    .msg-row {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      animation: msgIn 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    @keyframes msgIn {
+      from {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .msg-row.user {
+      flex-direction: row-reverse;
+    }
+
+    .avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-ui);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0;
+    }
+
+    .avatar-bot {
+      background: linear-gradient(135deg, var(--orange), #f5a623);
+      color: #fff;
+      box-shadow: var(--shadow-orange);
+    }
+
+    .avatar-user {
+      background: var(--gray-800);
+      color: var(--white);
+    }
+
+    .bubble-wrap {
+      max-width: 72%;
+    }
+
+    .bubble {
+      padding: 14px 18px;
+      border-radius: var(--radius);
+      font-size: 14px;
+      line-height: 1.7;
+      position: relative;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+
+    .bubble-bot {
+      background: var(--white);
+      color: var(--text-primary);
+      border: 1px solid var(--gray-200);
+      border-top-left-radius: 4px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .bubble-user {
+      background: var(--orange);
+      color: var(--white);
+      border-top-right-radius: 4px;
+      box-shadow: var(--shadow-orange);
+    }
+
+    .bubble p+p {
+      margin-top: 0.5em;
+    }
+
+    .bubble code {
+      font-family: 'SF Mono', 'Consolas', monospace;
+      background: rgba(0, 0, 0, 0.06);
+      padding: 2px 5px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+
+    .bubble-user code {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .bubble-time {
+      font-family: var(--font-ui);
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-top: 5px;
+      padding: 0 4px;
+    }
+
+    .msg-row.user .bubble-time {
+      text-align: right;
+    }
+
+    .typing-indicator {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 16px 20px;
+    }
+
+    .typing-indicator span {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--orange);
+      opacity: 0.5;
+      animation: bounce 1.2s infinite ease-in-out;
+    }
+
+    .typing-indicator span:nth-child(2) {
+      animation-delay: 0.15s;
+    }
+
+    .typing-indicator span:nth-child(3) {
+      animation-delay: 0.3s;
+    }
+
+    @keyframes bounce {
+
+      0%,
+      80%,
+      100% {
+        transform: translateY(0);
+        opacity: 0.5;
+      }
+
+      40% {
+        transform: translateY(-7px);
+        opacity: 1;
+      }
+    }
+
+    /* ── Welcome ── */
+    .welcome {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      text-align: center;
+      padding: 48px 24px;
+      gap: 8px;
+    }
+
+    .welcome-logo {
+      height: 36px;
+      margin-bottom: 8px;
+      opacity: 0.9;
+    }
+
+    .welcome-icon {
+      width: 64px;
+      height: 64px;
+      background: linear-gradient(135deg, var(--orange-light), var(--blue-bg));
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+      box-shadow: 0 8px 32px var(--orange-glow);
+    }
+
+    .welcome-icon svg {
+      width: 30px;
+      height: 30px;
+    }
+
+    .welcome h2 {
+      font-family: var(--font-heading);
+      font-size: 28px;
+      color: var(--text-primary);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.25;
+    }
+
+    .welcome h2 .orange {
+      color: var(--orange);
+    }
+
+    .welcome p {
+      font-size: 15px;
+      color: var(--text-secondary);
+      max-width: 420px;
+      line-height: 1.6;
+    }
+
+    .starter-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 20px;
+      width: 100%;
+      max-width: 500px;
+    }
+
+    .starter-btn {
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: 14px;
+      padding: 16px 16px;
+      text-align: left;
+      font-family: var(--font-body);
+      font-size: 13px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all var(--transition);
+      line-height: 1.45;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      overflow: hidden;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .starter-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 3px;
+      height: 100%;
+      background: var(--orange);
+      opacity: 0;
+      transition: opacity var(--transition);
+      border-radius: 0 2px 2px 0;
+    }
+
+    .starter-btn:hover {
+      border-color: var(--orange);
+      background: var(--orange-light);
+      color: var(--orange-hover);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .starter-btn:hover::before {
+      opacity: 1;
+    }
+
+    .starter-btn:active {
+      transform: translateY(0) scale(0.98);
+    }
+
+    .starter-btn .s-icon {
+      font-size: 20px;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .starter-btn .s-label {
+      font-family: var(--font-ui);
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--text-primary);
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .starter-btn:hover .s-label {
+      color: var(--orange);
+    }
+
+    .starter-btn .s-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      display: block;
+    }
+
+    /* ── Input area ── */
+    .input-area {
+      padding: 16px 28px 20px;
+      padding-bottom: calc(20px + var(--safe-bottom));
+      border-top: 1px solid var(--gray-200);
+      background: var(--white);
+      flex-shrink: 0;
+    }
+
+    .input-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+      background: var(--gray-50);
+      border: 1px solid var(--gray-300);
+      border-radius: 14px;
+      padding: 10px 14px 10px 18px;
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+
+    .input-row:focus-within {
+      border-color: var(--orange);
+      box-shadow: 0 0 0 3px var(--orange-glow);
+    }
+
+    #chat-input {
+      flex: 1;
+      background: none;
+      border: none;
+      outline: none;
+      font-family: var(--font-body);
+      font-size: 16px;
+      /* 16px prevents iOS zoom on focus */
+      color: var(--text-primary);
+      resize: none;
+      max-height: 140px;
+      line-height: 1.5;
+      padding: 0;
+    }
+
+    #chat-input::placeholder {
+      color: var(--gray-500);
+    }
+
+    .send-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: var(--orange);
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: all var(--transition);
+      box-shadow: var(--shadow-orange);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .send-btn:hover {
+      background: var(--orange-hover);
+      transform: scale(1.05);
+    }
+
+    .send-btn:active {
+      transform: scale(0.94);
+    }
+
+    .send-btn:disabled {
+      background: var(--gray-400);
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .send-btn svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .input-hint {
+      font-family: var(--font-ui);
+      font-size: 11px;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 8px;
+      letter-spacing: 0.01em;
+    }
+
+    .input-hint a {
+      color: var(--orange);
+      text-decoration: none;
+    }
+
+    /* ── Error state ── */
+    .error-bubble {
+      background: #fef2f2 !important;
+      color: #b91c1c !important;
+      border: 1px solid #fecaca !important;
+    }
+
+    /* ── Animations ── */
+    @keyframes fadeInScale {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .welcome {
+      animation: fadeInScale 0.5s ease-out;
+    }
+
+    /* ════════════════════════════════════════════
+       RESPONSIVE — Tablet (≤ 900px)
+       ════════════════════════════════════════════ */
+    @media (max-width: 900px) {
+      .shell {
+        grid-template-columns: 1fr;
+        max-width: 100%;
+      }
+
+      /* Sidebar becomes a fixed slide-out panel */
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 300px;
+        max-width: 85vw;
+        z-index: 99;
+        transform: translateX(-100%);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: none;
+        border-right: none;
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+        box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15);
+      }
+
+      .sidebar-backdrop {
+        display: block;
+        pointer-events: none;
+      }
+
+      .sidebar-backdrop.active {
+        pointer-events: auto;
+      }
+
+      .sidebar-close-btn {
+        display: flex;
+      }
+
+      /* Show hamburger menu */
+      .menu-toggle {
+        display: flex;
+      }
+
+      .chat-header {
+        padding: 14px 16px;
+        padding-top: calc(14px + var(--safe-top));
+      }
+
+      .chat-header h1 {
+        font-size: 16px;
+      }
+
+      .chat-header h1 span {
+        display: none;
+      }
+
+      .messages {
+        padding: 20px 16px;
+      }
+
+      .input-area {
+        padding: 12px 16px 16px;
+        padding-bottom: calc(16px + var(--safe-bottom));
+      }
+
+      .bubble-wrap {
+        max-width: 85%;
+      }
+
+      .welcome {
+        padding: 32px 20px;
+      }
+
+      .welcome h2 {
+        font-size: 24px;
+      }
+
+      .starter-grid {
+        max-width: 100%;
+      }
+    }
+
+    /* ════════════════════════════════════════════
+       RESPONSIVE — Phone (≤ 480px)
+       ════════════════════════════════════════════ */
+    @media (max-width: 480px) {
+      .sidebar {
+        width: 100%;
+        max-width: 100%;
+      }
+
+      .chat-header-icon {
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+      }
+
+      .chat-header-icon svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      .chat-header h1 {
+        font-size: 15px;
+      }
+
+      .header-meta {
+        gap: 8px;
+      }
+
+      .model-badge {
+        font-size: 10px;
+        padding: 3px 8px;
+      }
+
+      #msg-count {
+        display: none;
+      }
+
+      .messages {
+        padding: 16px 12px;
+        gap: 14px;
+      }
+
+      .avatar {
+        width: 28px;
+        height: 28px;
+        font-size: 9px;
+        border-radius: 8px;
+      }
+
+      .bubble {
+        padding: 10px 14px;
+        font-size: 13px;
+        line-height: 1.6;
+      }
+
+      .bubble-wrap {
+        max-width: 82%;
+      }
+
+      .msg-row {
+        gap: 8px;
+      }
+
+      .welcome {
+        padding: 24px 16px;
+        gap: 6px;
+      }
+
+      .welcome-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 16px;
+      }
+
+      .welcome-icon svg {
+        width: 24px;
+        height: 24px;
+      }
+
+      .welcome h2 {
+        font-size: 22px;
+      }
+
+      .welcome p {
+        font-size: 13px;
+      }
+
+      .starter-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+        margin-top: 16px;
+      }
+
+      .starter-btn {
+        padding: 14px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .starter-btn .s-icon {
+        font-size: 24px;
+        margin-bottom: 0;
+        flex-shrink: 0;
+      }
+
+      .starter-btn .s-label {
+        font-size: 13px;
+      }
+
+      .starter-btn .s-desc {
+        font-size: 11px;
+      }
+
+      .input-area {
+        padding: 10px 12px 12px;
+        padding-bottom: calc(12px + var(--safe-bottom));
+      }
+
+      .input-row {
+        border-radius: 12px;
+        padding: 8px 10px 8px 14px;
+      }
+
+      .send-btn {
+        width: 36px;
+        height: 36px;
+      }
+
+      .input-hint {
+        font-size: 10px;
+        margin-top: 6px;
+      }
+
+      .quick-list li button {
+        padding: 12px 14px;
+        font-size: 14px;
+      }
+
+      .chip {
+        font-size: 10px;
+        padding: 3px 10px;
+      }
+
+      .sidebar-footer {
+        padding-bottom: calc(16px + var(--safe-bottom));
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Mobile sidebar backdrop -->
+  <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="closeSidebar()"></div>
+
+  <div class="shell">
+
+    <!-- ── Sidebar ── -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-header-left">
+          <div class="logo-row">
+            <img
+              src="https://storage.googleapis.com/studio-design-asset-files/projects/EjOQZvw2qJ/s-300x41_fb233f55-0758-4d34-a078-38d93b84e9d6.svg"
+              alt="Money Forward India" />
+          </div>
+          <div class="tagline">AI Assistant</div>
+        </div>
+        <button class="sidebar-close-btn" onclick="closeSidebar()" title="Close menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <div class="sidebar-section">Quick Prompts</div>
+
+      <ul class="quick-list" id="quick-list">
+        <li><button onclick="sendQuick('What jobs are currently open at Money Forward India?')"><span
+              class="chip chip-jobs">Jobs</span>Open positions</button></li>
+        <li><button onclick="sendQuick('What is the software engineer role description?')"><span
+              class="chip chip-jobs">Jobs</span>Engineer role details</button></li>
+        <li><button onclick="sendQuick('How does Money Forward India handle personal data?')"><span
+              class="chip chip-policy">Policy</span>Personal data handling</button></li>
+        <li><button onclick="sendQuick('What is the privacy policy for users?')"><span
+              class="chip chip-policy">Policy</span>Privacy policy</button></li>
+        <li><button onclick="sendQuick('What security practices does Money Forward India follow?')"><span
+              class="chip chip-policy">Policy</span>Security practices</button></li>
+        <li><button onclick="sendQuick('Tell me about Money Forward India as a company.')"><span
+              class="chip chip-info">Info</span>About MFI</button></li>
+        <li><button onclick="sendQuick('What is the hiring process at Money Forward India?')"><span
+              class="chip chip-info">Info</span>Hiring process</button></li>
+        <li><button onclick="sendQuick('What technologies does Money Forward India use?')"><span
+              class="chip chip-info">Info</span>Tech stack</button></li>
+        <li><button onclick="sendQuick('Does MFI comply with DPDP Act 2023?')"><span
+              class="chip chip-policy">Policy</span>DPDP Act compliance</button></li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <div class="status-row"><span class="status-dot"></span>Live jobs feed active</div>
+        <button class="refresh-btn" id="refresh-btn" onclick="refreshJobs()">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M13.6 2.4A7 7 0 1 1 1 8" />
+            <polyline points="1 2 1 8 7 8" />
+          </svg>
+          Refresh job listings
+        </button>
+      </div>
+    </aside>
+
+    <!-- ── Chat ── -->
+    <div class="chat-area">
+
+      <div class="chat-header">
+        <div class="chat-header-left">
+          <button class="menu-toggle" id="menu-toggle" onclick="openSidebar()" title="Open menu">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+          <div class="chat-header-icon">
+            <img
+              src="data:image/png;base64,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"
+              alt="Money Forward India"
+              style="width:40px;height:40px;object-fit:contain;background:#fff;border-radius:8px;padding:2px;" />
+          </div>
+          <h1>AI Chat Assistant <span>by Money Forward India</span></h1>
+        </div>
+        <div class="header-meta">
+          <span class="model-badge">GPT-4o mini · RAG</span>
+          <span id="msg-count">0 messages</span>
+        </div>
+      </div>
+
+      <div class="messages" id="messages">
+        <!-- Welcome -->
+        <div class="welcome" id="welcome">
+          <div class="welcome-icon">
+            <img
+              src="data:image/png;base64,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"
+              alt="Money Forward India"
+              style="width:40px;height:40px;object-fit:contain;background:#fff;border-radius:8px;padding:2px;" />
+          </div>
+          <h2>Hello! How can I <span class="orange">help</span>?</h2>
+          <p>Ask me about jobs, company policies, careers, or anything about Money Forward India.</p>
+
+          <div class="starter-grid">
+            <button class="starter-btn" onclick="sendQuick('What open roles are available right now?')">
+              <span class="s-icon">💼</span>
+              <span class="s-label">Current Openings</span>
+              <span class="s-desc">Browse available positions</span>
+            </button>
+            <button class="starter-btn" onclick="sendQuick('How does MFI handle personal data and privacy?')">
+              <span class="s-icon">🔒</span>
+              <span class="s-label">Privacy & Data</span>
+              <span class="s-desc">Data protection policies</span>
+            </button>
+            <button class="starter-btn" onclick="sendQuick('Tell me about Money Forward India as a company.')">
+              <span class="s-icon">🏢</span>
+              <span class="s-label">About the Company</span>
+              <span class="s-desc">Mission, vision & values</span>
+            </button>
+            <button class="starter-btn" onclick="sendQuick('What is the interview process like?')">
+              <span class="s-icon">🎯</span>
+              <span class="s-label">Interview Process</span>
+              <span class="s-desc">Hiring stages explained</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="input-area">
+        <div class="input-row">
+          <textarea id="chat-input" rows="1" placeholder="Ask about jobs, policies, or the company…"
+            onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+          <button class="send-btn" id="send-btn" onclick="sendMessage()" title="Send">
+            <svg viewBox="0 0 16 16" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M14 2L2 8l4 2 2 4 6-12z" />
+            </svg>
+          </button>
+        </div>
+        <div class="input-hint"> Build with dhruv ⚡ · <a href="https://corp.moneyforward.in/" target="_blank">Money
+            Forward India</a></div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    const messagesEl = document.getElementById('messages');
+    const inputEl = document.getElementById('chat-input');
+    const sendBtn = document.getElementById('send-btn');
+    const welcomeEl = document.getElementById('welcome');
+    const msgCountEl = document.getElementById('msg-count');
+    const sidebar = document.getElementById('sidebar');
+    const backdrop = document.getElementById('sidebar-backdrop');
+
+    let msgCount = 0;
+    let isLoading = false;
+
+    // ── Backend config ──
+    const API_BASE = '';
+
+    // ── Mobile sidebar toggle ──
+    function openSidebar() {
+      sidebar.classList.add('open');
+      backdrop.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeSidebar() {
+      sidebar.classList.remove('open');
+      backdrop.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    // Close sidebar on swipe left (touch gesture)
+    let touchStartX = 0;
+    let touchCurrentX = 0;
+
+    sidebar.addEventListener('touchstart', (e) => {
+      touchStartX = e.touches[0].clientX;
+    }, { passive: true });
+
+    sidebar.addEventListener('touchmove', (e) => {
+      touchCurrentX = e.touches[0].clientX;
+      const diff = touchStartX - touchCurrentX;
+      if (diff > 0) {
+        sidebar.style.transform = `translateX(-${Math.min(diff, 300)}px)`;
+      }
+    }, { passive: true });
+
+    sidebar.addEventListener('touchend', () => {
+      const diff = touchStartX - touchCurrentX;
+      if (diff > 80) {
+        closeSidebar();
+      }
+      sidebar.style.transform = '';
+    }, { passive: true });
+
+    // Handle visual viewport resize (mobile keyboard)
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', () => {
+        const vvh = window.visualViewport.height;
+        document.documentElement.style.setProperty('--vvh', vvh + 'px');
+        // Scroll chat to bottom when keyboard opens
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+      });
+    }
+
+    function autoResize(el) {
+      el.style.height = 'auto';
+      el.style.height = Math.min(el.scrollHeight, 140) + 'px';
+    }
+
+    function handleKey(e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    }
+
+    function formatTime() {
+      return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function appendMessage(role, text) {
+      if (welcomeEl) welcomeEl.style.display = 'none';
+
+      msgCount++;
+      msgCountEl.textContent = msgCount + ' message' + (msgCount !== 1 ? 's' : '');
+
+      const row = document.createElement('div');
+      row.className = 'msg-row ' + role;
+
+      const avatarEl = document.createElement('div');
+      avatarEl.className = 'avatar avatar-' + role;
+      avatarEl.textContent = role === 'bot' ? 'MF' : 'You';
+
+      const bubbleWrap = document.createElement('div');
+      bubbleWrap.className = 'bubble-wrap';
+
+      const bubble = document.createElement('div');
+      bubble.className = 'bubble bubble-' + role;
+      if (role === 'error') {
+        bubble.className = 'bubble bubble-bot error-bubble';
+        avatarEl.className = 'avatar avatar-bot';
+      }
+      bubble.innerHTML = formatText(text);
+
+      const time = document.createElement('div');
+      time.className = 'bubble-time';
+      time.textContent = formatTime();
+
+      bubbleWrap.appendChild(bubble);
+      bubbleWrap.appendChild(time);
+
+      row.appendChild(avatarEl);
+      row.appendChild(bubbleWrap);
+
+      messagesEl.appendChild(row);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+      return bubble;
+    }
+
+    function formatText(text) {
+      return text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        .replace(/`(.*?)`/g, '<code>$1</code>')
+        .replace(/\n/g, '<br/>');
+    }
+
+    function addTypingIndicator() {
+      const row = document.createElement('div');
+      row.className = 'msg-row bot';
+      row.id = 'typing';
+
+      const avatarEl = document.createElement('div');
+      avatarEl.className = 'avatar avatar-bot';
+      avatarEl.textContent = 'MF';
+
+      const bubble = document.createElement('div');
+      bubble.className = 'bubble bubble-bot';
+      bubble.innerHTML = '<div class="typing-indicator"><span></span><span></span><span></span></div>';
+
+      row.appendChild(avatarEl);
+      row.appendChild(bubble);
+      messagesEl.appendChild(row);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    function removeTypingIndicator() {
+      const el = document.getElementById('typing');
+      if (el) el.remove();
+    }
+
+    async function sendMessage() {
+      const query = inputEl.value.trim();
+      if (!query || isLoading) return;
+
+      // Close sidebar on mobile after sending via quick prompt
+      closeSidebar();
+
+      inputEl.value = '';
+      inputEl.style.height = 'auto';
+      sendBtn.disabled = true;
+      isLoading = true;
+
+      appendMessage('user', query);
+      addTypingIndicator();
+
+      try {
+        const res = await fetch(`${API_BASE}/chat`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query })
+        });
+
+        if (!res.ok) throw new Error(`Server error ${res.status}`);
+        const data = await res.json();
+
+        removeTypingIndicator();
+        appendMessage('bot', data.result || data.answer || 'No response.');
+      } catch (err) {
+        removeTypingIndicator();
+        appendMessage('error', 'Could not reach the backend. Make sure your Python server is running.\n\nError: ' + err.message);
+      } finally {
+        sendBtn.disabled = false;
+        isLoading = false;
+        inputEl.focus();
+      }
+    }
+
+    function sendQuick(text) {
+      inputEl.value = text;
+      sendMessage();
+    }
+
+    async function refreshJobs() {
+      if (isLoading) return;
+      isLoading = true;
+      const btn = document.getElementById('refresh-btn');
+      const orig = btn.innerHTML;
+      btn.textContent = 'Refreshing…';
+      btn.disabled = true;
+
+      try {
+        const res = await fetch(`${API_BASE}/refresh-jobs`, { method: 'POST' });
+        const data = await res.json();
+        appendMessage('bot', 'Job listings refreshed. ' + (data.count ? data.count + ' jobs loaded.' : ''));
+      } catch {
+        appendMessage('error', 'Could not refresh jobs — check your backend connection.');
+      } finally {
+        btn.innerHTML = orig;
+        btn.disabled = false;
+        isLoading = false;
+      }
+    }
+  </script>
+
+</body>
+
+</html>

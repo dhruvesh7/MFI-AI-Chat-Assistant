@@ -1,0 +1,11 @@
+langchain
+langchain-community
+langchain-openai
+chromadb
+langchain-chroma
+tiktoken
+python-dotenv
+pypdf
+requests
+beautifulsoup4
+types-beautifulsoup4
