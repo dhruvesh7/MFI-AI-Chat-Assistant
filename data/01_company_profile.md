@@ -6,7 +6,7 @@ Mission:
 Money Forward. Move your life forward
 
 Vision:
-To build an open and fair financial platform.
+To build an open and  financial platform.
 
 Money Forward India Private Limited:
 Established in Chennai in February 2025 as the third overseas development center.

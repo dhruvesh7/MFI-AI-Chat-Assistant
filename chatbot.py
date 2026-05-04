@@ -9,6 +9,11 @@ from langchain_classic.chains import RetrievalQA
 from langchain_core.documents import Document
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.retrievers import BaseRetriever
+import warnings
+from langchain_core._api import LangChainDeprecationWarning
+
+# Suppress LangChain deprecation warnings
+warnings.filterwarnings("ignore", category=LangChainDeprecationWarning)
 
 import html
 import re
@@ -29,7 +34,7 @@ RAG_CHAT_PROMPT = ChatPromptTemplate.from_messages(
             "system",
             "You are an assistant for Money Forward India. Answer using ONLY the "
             "information in the context below. If the context does not contain enough "
-            "information, say you don't know—do not invent details.\n\n{context}",
+            "information, Generate a response based on your general knowledge.\n\n{context}",
         ),
         ("human", "{question}"),
     ]
@@ -243,7 +248,7 @@ def main():
 
     print("Loading vector DB...")
 
-    embeddings = OpenAIEmbeddings()
+    embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
 
     db = Chroma(
         persist_directory=DB_PATH,

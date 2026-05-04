@@ -25,6 +25,11 @@ A production-ready Retrieval-Augmented Generation (RAG) chatbot built for **Mone
 **Hybrid Knowledge Retrieval**
 Static knowledge base (Markdown documents) combined with a dynamically fetched live jobs feed. The custom `SmartRetriever` decides at query time which sources to prioritise.
 
+**Streaming & Performance**
+- Real-time streaming response using Server-Sent Events (SSE).
+- In-memory `QueryCache` to provide instant answers for redundant queries.
+- `ConversationBufferMemory` to maintain context across multiple turns (per session).
+
 **Query Intelligence**
 - Expands short/ambiguous queries before vector search (e.g. "MFI" → "Money Forward India", "PII" → "Personal Information Protection Policy")
 - Re-ranks retrieved chunks to surface privacy/security policy documents for relevant queries
@@ -34,8 +39,8 @@ Static knowledge base (Markdown documents) combined with a dynamically fetched l
 Uses Maximal Marginal Relevance (fetch_k=24, k=8, λ=0.55) to balance relevance with diversity, avoiding redundant chunks in the LLM context.
 
 **Dual Interfaces**
-- Interactive CLI for local testing
-- FastAPI HTTP API (`/chat`, `/refresh-jobs`, `/health`) with a bundled HTML frontend
+- Interactive CLI for local testing.
+- FastAPI HTTP API with a **premium, glassmorphic Web UI** featuring real-time typing effects, job card visualization, and mobile responsiveness.
 
 **Live Job Sync**
 Jobs are fetched from the MFI Zoho Recruit RSS feed on startup and on demand via `/refresh-jobs` — no re-ingestion required for career queries.
@@ -45,17 +50,19 @@ Jobs are fetched from the MFI Zoho Recruit RSS feed on startup and on demand via
 ## Data Flow
 
 ```
-Query → SmartRetriever
+Query → API layer (Session Memory + Cache)
+           ↓
+        SmartRetriever
            ├─ Expand query terms
            ├─ MMR search on ChromaDB (static KB)
            ├─ Re-rank by topic (privacy / security / jobs)
            └─ Inject live jobs doc if job-related
-                        ↓
-              LangChain RetrievalQA
-                        ↓
-              GPT-4o-mini (grounded, no hallucination)
-                        ↓
-                    Answer
+                         ↓
+               LangChain RetrievalQA
+                         ↓
+               GPT-4o-mini (Streaming output)
+                         ↓
+                SSE Stream → Web UI
 ```
 
 ---

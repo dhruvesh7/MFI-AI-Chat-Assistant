@@ -7,18 +7,21 @@ An AI-powered chatbot for Money Forward India (MFI) built with **LangChain**, **
 ## Architecture
 
 ```
-User Query
+User Query (Streaming via SSE)
     │
     ▼
-SmartRetriever (chatbot.py)
-    ├── Query expansion (expand acronyms, policy keywords)
-    ├── MMR vector search over ChromaDB (k=8, fetch_k=24)
-    ├── Priority re-ranking for privacy/security topics
-    └── Injects live jobs document for job-related queries
+FastAPI (api.py)
+    ├── Memory Manager (ConversationBufferMemory per session)
+    ├── QueryCache (In-memory storage for redundant queries)
+    └── SmartRetriever (chatbot.py)
+         ├── Query expansion (expand acronyms, policy keywords)
+         ├── MMR vector search over ChromaDB (k=8, fetch_k=24)
+         ├── Priority re-ranking for privacy/security topics
+         └── Injects live jobs document for job-related queries
     │
     ▼
-RetrievalQA (LangChain)
-    └── GPT-4o-mini → grounded answer
+LangChain RetrievalQA
+    └── GPT-4o-mini → Streaming response → Web UI
 ```
 
 ---
@@ -30,8 +33,9 @@ RetrievalQA (LangChain)
 ├── vector_db/             # Persisted ChromaDB embeddings (auto-created by ingest.py)
 ├── ingest.py              # Ingests data/ → vector_db/
 ├── chatbot.py             # Core RAG logic + CLI
-├── api.py                 # FastAPI HTTP wrapper
-├── mfi_chatbot.html       # Frontend UI (served by FastAPI)
+├── api.py                 # FastAPI HTTP wrapper (Streaming SSE)
+├── mfi_chatbot.html       # Premium Frontend UI (served by FastAPI)
+├── assets/                # Local UI assets (mfi_icon.png)
 ├── requirements.txt       # Python dependencies
 └── .env                   # API keys (not committed)
 ```
@@ -87,7 +91,7 @@ Commands inside the CLI:
 ### API + Web UI mode
 
 ```bash
-uvicorn api:app --reload
+uvicorn api:app --port 8000
 ```
 
 Open `http://localhost:8000` in your browser to access the chat UI.
@@ -96,18 +100,14 @@ Open `http://localhost:8000` in your browser to access the chat UI.
 
 | Method | Path | Description |
 |--------|------|-------------|
-| `POST` | `/chat` | Send a query, get a grounded answer |
+| `POST` | `/chat` | Send a query, get a streaming SSE grounded response |
 | `POST` | `/refresh-jobs` | Re-fetch live job listings |
 | `GET` | `/health` | Health check + job count |
 | `GET` | `/` | Serve the frontend HTML |
 
-**Example `/chat` request:**
+**Example `/chat` response stream:**
 
-```bash
-curl -X POST http://localhost:8000/chat \
-  -H "Content-Type: application/json" \
-  -d '{"query": "What is Money Forward India privacy policy?"}'
-```
+The `/chat` endpoint now returns a `text/event-stream` using Server-Sent Events (SSE). Each chunk is a JSON string containing the new token.
 
 ---
 

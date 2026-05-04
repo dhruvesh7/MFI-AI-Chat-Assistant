@@ -39,7 +39,7 @@ def main():
         print("❌ No chunks created. Nothing to ingest.")
         return
 
-    embeddings = OpenAIEmbeddings()
+    embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
 
     db = Chroma.from_documents(
         chunks,

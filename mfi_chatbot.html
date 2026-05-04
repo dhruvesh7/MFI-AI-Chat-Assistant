@@ -8,13 +8,15 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="theme-color" content="#ee8133" />
+  <meta name="theme-color" content="#E8782A" />
   <title>Money Forward India — AI Assistant</title>
   <meta name="description" content="Ask questions about Money Forward India — jobs, policies, culture, and more." />
+  <link rel="icon" type="image/png" href="/assets/mfi_icon.png" />
+  <link rel="apple-touch-icon" href="/assets/mfi_icon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Lato:wght@300;400;700&family=Poppins:wght@400;500;600&display=swap"
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Syne:wght@700;800&family=Poppins:wght@400;500;600&display=swap"
     rel="stylesheet" />
   <style>
     *,
@@ -26,12 +28,11 @@
     }
 
     :root {
-      --orange: #ee8133;
-      --orange-hover: #d97129;
-      --orange-light: #fdf1e7;
+      --orange: #E8782A;
+      --orange-hover: #d36a20;
+      --orange-light: #fef3ea;
       --orange-glow: rgba(238, 129, 51, 0.15);
       --blue-bg: #ebf9ff;
-      --blue-light: #d4f1fd;
       --white: #ffffff;
       --gray-50: #f8f9fa;
       --gray-100: #f1f3f5;
@@ -47,7 +48,6 @@
       --text-secondary: #4c4c4c;
       --text-muted: #868e96;
       --border: rgba(0, 0, 0, 0.08);
-      --border-mid: rgba(0, 0, 0, 0.12);
       --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
       --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
       --shadow-lg: 0 12px 48px rgba(0, 0, 0, 0.1);
@@ -55,8 +55,8 @@
       --radius: 16px;
       --radius-sm: 10px;
       --radius-xs: 6px;
-      --font-heading: 'Montserrat', system-ui, sans-serif;
-      --font-body: 'Lato', system-ui, sans-serif;
+      --font-heading: 'Syne', system-ui, sans-serif;
+      --font-body: 'DM Sans', system-ui, sans-serif;
       --font-ui: 'Poppins', system-ui, sans-serif;
       --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
       --safe-top: env(safe-area-inset-top, 0px);
@@ -137,7 +137,6 @@
       padding-left: 2px;
     }
 
-    /* ── Mobile sidebar close button ── */
     .sidebar-close-btn {
       display: none;
       width: 36px;
@@ -337,7 +336,6 @@
       opacity: 1;
     }
 
-    /* ── Hamburger / menu toggle ── */
     .menu-toggle {
       display: none;
       width: 40px;
@@ -406,6 +404,15 @@
     .chat-header-icon svg {
       width: 40px;
       height: 40px;
+    }
+
+    .chat-header-icon img {
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
+      background: #fff;
+      border-radius: 8px;
+      padding: 2px;
     }
 
     .chat-header h1 {
@@ -524,6 +531,11 @@
       max-width: 72%;
     }
 
+    .bubble-wrap.has-jobs {
+      max-width: min(680px, 96%);
+      width: min(680px, 96%);
+    }
+
     .bubble {
       padding: 14px 18px;
       border-radius: var(--radius);
@@ -551,6 +563,54 @@
 
     .bubble p+p {
       margin-top: 0.5em;
+    }
+
+    .bubble p {
+      margin: 0;
+    }
+
+    .bubble ul,
+    .bubble ol {
+      margin: 0.6em 0 0.6em 1.4em;
+    }
+    
+    .bubble ol {
+      list-style-type: decimal;
+    }
+    
+    .bubble ul {
+      list-style-type: disc;
+    }
+    
+    .bubble li {
+      margin: 0.3em 0;
+      display: list-item;
+    }
+
+    .bubble table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0.6em 0;
+      font-size: 13px;
+      border: 1px solid var(--gray-200);
+      border-radius: 8px;
+      overflow: hidden;
+      display: block;
+      overflow-x: auto;
+    }
+
+    .bubble th,
+    .bubble td {
+      border: 1px solid var(--gray-200);
+      padding: 6px 8px;
+      text-align: left;
+      vertical-align: top;
+      white-space: nowrap;
+    }
+
+    .bubble th {
+      background: var(--gray-100);
+      font-weight: 600;
     }
 
     .bubble code {
@@ -598,7 +658,7 @@
     }
 
     .typing-indicator span:nth-child(3) {
-      animation-delay: 0.3s;
+      animation-delay: 0.30s;
     }
 
     @keyframes bounce {
@@ -616,6 +676,22 @@
       }
     }
 
+    .streaming-cursor {
+      display: inline-block;
+      width: 6px;
+      height: 14px;
+      background-color: var(--orange);
+      animation: blink 1s step-end infinite;
+      vertical-align: middle;
+      margin-left: 4px;
+      border-radius: 2px;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
     /* ── Welcome ── */
     .welcome {
       display: flex;
@@ -626,12 +702,7 @@
       text-align: center;
       padding: 48px 24px;
       gap: 8px;
-    }
-
-    .welcome-logo {
-      height: 36px;
-      margin-bottom: 8px;
-      opacity: 0.9;
+      animation: fadeInScale 0.5s ease-out;
     }
 
     .welcome-icon {
@@ -644,11 +715,13 @@
       justify-content: center;
       margin-bottom: 12px;
       box-shadow: 0 8px 32px var(--orange-glow);
+      flex-shrink: 0;
     }
 
-    .welcome-icon svg {
-      width: 30px;
-      height: 30px;
+    .welcome-icon svg,
+    .welcome-icon img {
+      width: 32px;
+      height: 32px;
     }
 
     .welcome h2 {
@@ -684,7 +757,7 @@
       background: var(--white);
       border: 1px solid var(--gray-200);
       border-radius: 14px;
-      padding: 16px 16px;
+      padding: 16px;
       text-align: left;
       font-family: var(--font-body);
       font-size: 13px;
@@ -784,7 +857,6 @@
       outline: none;
       font-family: var(--font-body);
       font-size: 16px;
-      /* 16px prevents iOS zoom on focus */
       color: var(--text-primary);
       resize: none;
       max-height: 140px;
@@ -846,14 +918,13 @@
       text-decoration: none;
     }
 
-    /* ── Error state ── */
+    /* ── Error ── */
     .error-bubble {
       background: #fef2f2 !important;
       color: #b91c1c !important;
       border: 1px solid #fecaca !important;
     }
 
-    /* ── Animations ── */
     @keyframes fadeInScale {
       from {
         opacity: 0;
@@ -866,20 +937,451 @@
       }
     }
 
-    .welcome {
-      animation: fadeInScale 0.5s ease-out;
+    /* ════════════════════════════
+       JOB CARDS  (v2 — enhanced)
+       ════════════════════════════ */
+
+    .jobs-wrapper {
+      margin-top: 10px;
     }
 
-    /* ════════════════════════════════════════════
-       RESPONSIVE — Tablet (≤ 900px)
-       ════════════════════════════════════════════ */
+    /* Dept badge must NOT stretch full width */
+    .job-dept-badge {
+      font-family: var(--font-ui);
+      font-size: 10px;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 20px;
+      white-space: nowrap;
+      letter-spacing: 0.01em;
+      display: inline-block;
+      align-self: flex-start;
+      width: fit-content;
+      max-width: 100%;
+    }
+
+    .results-header {
+      font-family: var(--font-ui);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+      background: rgba(255, 255, 255, 0.85);
+      padding: 8px 18px;
+      border-radius: 30px;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    .results-header::after {
+      display: none;
+    }
+
+    .live-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #4caf50;
+      box-shadow: 0 0 6px rgba(76, 175, 80, 0.6);
+      animation: pulse 2s infinite;
+      flex-shrink: 0;
+    }
+
+    .count-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 5px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--orange), #d36a20);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.2), 0 2px 4px rgba(238, 129, 51, 0.3);
+      color: var(--white);
+      font-family: var(--font-ui);
+      font-size: 9px;
+      font-weight: 700;
+    }
+
+    .job-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 12px;
+    }
+
+    /* Card base */
+    .job-card {
+      background: var(--white);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      /* Softer border */
+      border-radius: 16px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease, border-color 0.3s ease;
+      position: relative;
+      animation: slideUp 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    .job-card:hover {
+      border-color: rgba(232, 120, 42, 0.3);
+      box-shadow: 0 8px 30px rgba(232, 120, 42, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+      transform: translateY(-4px);
+      /* Pushed up slightly more with spring effect */
+    }
+
+    .job-card.expanded {
+      border-color: rgba(232, 120, 42, 0.45);
+      box-shadow: 0 10px 35px rgba(232, 120, 42, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+      transform: translateY(-2px);
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Coloured accent bar at top */
+    .card-accent-bar {
+      height: 4px;
+      width: 100%;
+      background: linear-gradient(90deg, var(--orange), #f5a623 40%, #ffce85);
+      opacity: 0.8;
+      transition: height 0.3s ease, opacity 0.3s ease;
+    }
+
+    .job-card:hover .card-accent-bar,
+    .job-card.expanded .card-accent-bar {
+      opacity: 1;
+      height: 6px;
+      /* Expanding accent bar */
+    }
+
+    /* Card body padding */
+    .card-body {
+      padding: 16px 18px 14px;
+    }
+
+    /* Top row: title + dept badge + bookmark */
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .card-top-left {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .job-title {
+      font-family: var(--font-heading);
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.25;
+      margin-bottom: 0;
+      word-break: break-word;
+    }
+
+    .badge-eng {
+      background: #eff6ff;
+      color: #2563eb;
+    }
+
+    .badge-pm {
+      background: #f0fdf4;
+      color: #16a34a;
+    }
+
+    .badge-data {
+      background: #fdf4ff;
+      color: #9333ea;
+    }
+
+    .badge-fin {
+      background: #fffbeb;
+      color: #d97706;
+    }
+
+    .badge-ops {
+      background: #f0f9ff;
+      color: #0284c7;
+    }
+
+    .badge-default {
+      background: var(--orange-light);
+      color: var(--orange);
+    }
+
+    /* Bookmark button */
+    .card-bookmark {
+      width: 30px;
+      height: 30px;
+      border: 1px solid var(--gray-200);
+      border-radius: 8px;
+      background: var(--gray-50);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all var(--transition);
+      flex-shrink: 0;
+      color: var(--text-muted);
+    }
+
+    .card-bookmark:hover,
+    .card-bookmark.saved {
+      background: var(--orange-light);
+      border-color: rgba(232, 120, 42, 0.3);
+      color: var(--orange);
+    }
+
+    .card-bookmark svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    /* Meta row */
+    .card-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 11px;
+    }
+
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-body);
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      font-weight: 500;
+      min-width: 0;
+    }
+
+    .meta-item svg {
+      width: 13px;
+      height: 13px;
+      flex-shrink: 0;
+      opacity: 0.6;
+    }
+
+    /* Salary highlight row */
+    .card-salary-row {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-top: 10px;
+    }
+
+    .salary-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-family: var(--font-ui);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 11px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
+      color: #2e7d32;
+      border: 1px solid rgba(46, 125, 50, 0.18);
+      box-shadow: 0 2px 8px rgba(46, 125, 50, 0.1);
+      /* Glow! */
+    }
+
+    .salary-badge svg {
+      width: 12px;
+      height: 12px;
+      opacity: 0.75;
+    }
+
+    .salary-badge.undisclosed {
+      background: var(--gray-100);
+      color: var(--text-muted);
+      border-color: var(--gray-200);
+      font-weight: 500;
+    }
+
+    /* Tags */
+    .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 11px;
+    }
+
+    .tag {
+      font-family: var(--font-ui);
+      font-size: 11px;
+      font-weight: 500;
+      padding: 3px 9px;
+      border-radius: 6px;
+      background: rgba(232, 120, 42, 0.08);
+      /* Transparent integrated look */
+      color: var(--orange);
+      border: 1px solid transparent;
+      transition: background 0.2s ease;
+    }
+
+    .job-card:hover .tag {
+      background: rgba(232, 120, 42, 0.12);
+    }
+
+    /* Expandable description */
+    .card-expanded {
+      display: none;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px dashed var(--gray-200);
+      animation: expandIn 0.22s ease;
+    }
+
+    .job-card.expanded .card-expanded {
+      display: block;
+    }
+
+    @keyframes expandIn {
+      from {
+        opacity: 0;
+        transform: translateY(-4px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .card-expanded p {
+      font-family: var(--font-body);
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      max-height: 180px;
+      overflow-y: auto;
+    }
+
+    /* Footer */
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+      padding: 10px 18px 14px;
+      border-top: 1px solid var(--gray-100);
+      background: var(--gray-50);
+    }
+
+    .posted-date {
+      font-family: var(--font-ui);
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      min-width: 0;
+    }
+
+    .posted-date svg {
+      width: 11px;
+      height: 11px;
+      opacity: 0.55;
+    }
+
+    /* Apply button */
+    .apply-btn {
+      font-family: var(--font-ui);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 8px 18px;
+      background: var(--orange);
+      color: var(--white);
+      border: none;
+      border-radius: 9px;
+      cursor: pointer;
+      transition: all var(--transition);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: 0 3px 10px rgba(232, 120, 42, 0.35);
+      letter-spacing: 0.01em;
+    }
+
+    .apply-btn:hover {
+      background: var(--orange-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(232, 120, 42, 0.4);
+    }
+
+    .apply-btn:active {
+      transform: translateY(0);
+    }
+
+    .apply-btn svg {
+      width: 12px;
+      height: 12px;
+    }
+
+    /* Source chip */
+    .source-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-ui);
+      font-size: 11px;
+      color: var(--text-muted);
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+      border-radius: 20px;
+      padding: 5px 12px;
+      margin-top: 14px;
+    }
+
+    .source-chip svg {
+      width: 11px;
+      height: 11px;
+      opacity: 0.6;
+    }
+
+    .source-chip span {
+      color: var(--orange);
+      font-weight: 600;
+    }
+
+    /* ════════════════════════════
+       RESPONSIVE — Tablet ≤ 900px
+       ════════════════════════════ */
     @media (max-width: 900px) {
       .shell {
         grid-template-columns: 1fr;
         max-width: 100%;
       }
 
-      /* Sidebar becomes a fixed slide-out panel */
       .sidebar {
         position: fixed;
         top: 0;
@@ -912,7 +1414,6 @@
         display: flex;
       }
 
-      /* Show hamburger menu */
       .menu-toggle {
         display: flex;
       }
@@ -943,8 +1444,9 @@
         max-width: 85%;
       }
 
-      .welcome {
-        padding: 32px 20px;
+      .bubble-wrap.has-jobs {
+        max-width: 96%;
+        width: 96%;
       }
 
       .welcome h2 {
@@ -956,9 +1458,167 @@
       }
     }
 
-    /* ════════════════════════════════════════════
-       RESPONSIVE — Phone (≤ 480px)
-       ════════════════════════════════════════════ */
+    /* ── Analytics Modal ── */
+    .analytics-toggle {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      border: 1px solid var(--gray-200);
+      background: var(--white);
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all var(--transition);
+      box-shadow: var(--shadow-sm);
+    }
+    .analytics-toggle:hover {
+      background: var(--orange-light);
+      color: var(--orange);
+      border-color: rgba(232, 120, 42, 0.3);
+      transform: scale(1.05);
+    }
+    .analytics-toggle svg {
+      width: 20px;
+      height: 20px;
+    }
+    .glass-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+    .glass-modal.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    .glass-modal .modal-content {
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 24px;
+      padding: 30px;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+      transform: scale(0.95) translateY(10px);
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .glass-modal.active .modal-content {
+      transform: scale(1) translateY(0);
+    }
+    .glass-modal h2 {
+      font-family: var(--font-heading);
+      margin-bottom: 20px;
+      font-size: 20px;
+      color: var(--text-primary);
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+    .stat-card {
+      background: var(--white);
+      border-radius: 16px;
+      padding: 15px;
+      border: 1px solid var(--gray-200);
+      box-shadow: var(--shadow-sm);
+    }
+    .stat-label {
+      font-family: var(--font-ui);
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: block;
+      margin-bottom: 5px;
+    }
+    .stat-value {
+      font-family: var(--font-heading);
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--orange);
+    }
+    .close-btn {
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      background: var(--gray-100);
+      color: var(--text-primary);
+      border: none;
+      font-family: var(--font-ui);
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .close-btn:hover {
+      background: var(--gray-200);
+    }
+
+    /* ── Splash Screen ── */
+    #splash-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      background: var(--white);
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 30px;
+      transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
+    }
+
+    .splash-logo {
+      width: 300px;
+      max-width: 80%;
+      animation: splash-pulse 1.5s ease-in-out infinite alternate;
+    }
+
+    .splash-loader {
+      width: 36px;
+      height: 36px;
+      border: 4px solid var(--orange-light);
+      border-top-color: var(--orange);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes splash-pulse {
+      0% {
+        transform: scale(0.95);
+        opacity: 0.8;
+      }
+
+      100% {
+        transform: scale(1.05);
+        opacity: 1;
+      }
+    }
+
+    /* ════════════════════════════
+       RESPONSIVE — Phone ≤ 480px
+       ════════════════════════════ */
     @media (max-width: 480px) {
       .sidebar {
         width: 100%;
@@ -1015,6 +1675,15 @@
         max-width: 82%;
       }
 
+      .bubble-wrap.has-jobs {
+        max-width: 98%;
+        width: 98%;
+      }
+
+      .job-cards {
+        grid-template-columns: 1fr;
+      }
+
       .msg-row {
         gap: 8px;
       }
@@ -1030,7 +1699,8 @@
         border-radius: 16px;
       }
 
-      .welcome-icon svg {
+      .welcome-icon svg,
+      .welcome-icon img {
         width: 24px;
         height: 24px;
       }
@@ -1104,11 +1774,35 @@
       .sidebar-footer {
         padding-bottom: calc(16px + var(--safe-bottom));
       }
+
+      /* Job cards mobile */
+      .job-title {
+        font-size: 13px;
+      }
+
+      .card-footer {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+
+      .apply-btn {
+        width: 100%;
+        justify-content: center;
+      }
     }
   </style>
 </head>
 
 <body>
+
+  <!-- Splash Screen -->
+  <div id="splash-screen">
+    <img
+      src="https://corp.moneyforward.com/wp-content/uploads/2025/09/onboarding_long.gif"
+      alt="Money Forward India" class="splash-logo" />
+    <div class="splash-loader"></div>
+  </div>
 
   <!-- Mobile sidebar backdrop -->
   <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="closeSidebar()"></div>
@@ -1140,8 +1834,8 @@
       <ul class="quick-list" id="quick-list">
         <li><button onclick="sendQuick('What jobs are currently open at Money Forward India?')"><span
               class="chip chip-jobs">Jobs</span>Open positions</button></li>
-        <li><button onclick="sendQuick('What is the software engineer role description?')"><span
-              class="chip chip-jobs">Jobs</span>Engineer role details</button></li>
+        <li><button onclick="sendQuick('What is the software engineer Intern role description?')"><span
+              class="chip chip-jobs">Jobs</span>Software Engineer Intern </button></li>
         <li><button onclick="sendQuick('How does Money Forward India handle personal data?')"><span
               class="chip chip-policy">Policy</span>Personal data handling</button></li>
         <li><button onclick="sendQuick('What is the privacy policy for users?')"><span
@@ -1174,60 +1868,51 @@
 
       <div class="chat-header">
         <div class="chat-header-left">
-          <button class="menu-toggle" id="menu-toggle" onclick="openSidebar()" title="Open menu">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-              stroke-linejoin="round">
-              <line x1="3" y1="6" x2="21" y2="6"></line>
-              <line x1="3" y1="12" x2="21" y2="12"></line>
-              <line x1="3" y1="18" x2="21" y2="18"></line>
-            </svg>
+          <button class="menu-toggle" id="menu-toggle" onclick="openSidebar()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
           </button>
           <div class="chat-header-icon">
-            <img
-              src="data:image/png;base64,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"
-              alt="Money Forward India"
-              style="width:40px;height:40px;object-fit:contain;background:#fff;border-radius:8px;padding:2px;" />
+            <img src="/assets/mfi_icon.png" alt="MFI Logo" />
           </div>
-          <h1>AI Chat Assistant <span>by Money Forward India</span></h1>
+          <h1>AI Assistant <span>by Money Forward India</span></h1>
         </div>
         <div class="header-meta">
-          <span class="model-badge">GPT-4o mini · RAG</span>
+          <button class="analytics-toggle" id="analyticsBtn" onclick="toggleAnalytics()" title="Agent Analytics">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+          </button>
+          <span class="model-badge" id="rag-status">Checking RAG…</span>
           <span id="msg-count">0 messages</span>
         </div>
       </div>
 
       <div class="messages" id="messages">
-        <!-- Welcome -->
+        <!-- Welcome screen -->
         <div class="welcome" id="welcome">
           <div class="welcome-icon">
-            <img
-              src="data:image/png;base64,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"
-              alt="Money Forward India"
-              style="width:40px;height:40px;object-fit:contain;background:#fff;border-radius:8px;padding:2px;" />
+            <img src="/assets/mfi_icon.png" alt="MFI Icon" />
           </div>
           <h2>Hello! How can I <span class="orange">help</span>?</h2>
           <p>Ask me about jobs, company policies, careers, or anything about Money Forward India.</p>
-
           <div class="starter-grid">
-            <button class="starter-btn" onclick="sendQuick('What open roles are available right now?')">
-              <span class="s-icon">💼</span>
-              <span class="s-label">Current Openings</span>
-              <span class="s-desc">Browse available positions</span>
-            </button>
-            <button class="starter-btn" onclick="sendQuick('How does MFI handle personal data and privacy?')">
-              <span class="s-icon">🔒</span>
-              <span class="s-label">Privacy & Data</span>
-              <span class="s-desc">Data protection policies</span>
-            </button>
             <button class="starter-btn" onclick="sendQuick('Tell me about Money Forward India as a company.')">
               <span class="s-icon">🏢</span>
               <span class="s-label">About the Company</span>
               <span class="s-desc">Mission, vision & values</span>
             </button>
+            <button class="starter-btn" onclick="sendQuick('What open roles are available right now?')">
+              <span class="s-icon">💼</span>
+              <span class="s-label">Current Openings</span>
+              <span class="s-desc">Browse available positions</span>
+            </button>
             <button class="starter-btn" onclick="sendQuick('What is the interview process like?')">
               <span class="s-icon">🎯</span>
               <span class="s-label">Interview Process</span>
               <span class="s-desc">Hiring stages explained</span>
+            </button>
+            <button class="starter-btn" onclick="sendQuick('How does MFI handle personal data and privacy?')">
+              <span class="s-icon">🔒</span>
+              <span class="s-label">Privacy & Data</span>
+              <span class="s-desc">Data protection policies</span>
             </button>
           </div>
         </div>
@@ -1235,7 +1920,7 @@
 
       <div class="input-area">
         <div class="input-row">
-          <textarea id="chat-input" rows="1" placeholder="Ask about jobs, policies, or the company…"
+          <textarea id="chat-input" rows="1" placeholder="Ask about jobs, policies, or the company..."
             onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
           <button class="send-btn" id="send-btn" onclick="sendMessage()" title="Send">
             <svg viewBox="0 0 16 16" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"
@@ -1244,10 +1929,36 @@
             </svg>
           </button>
         </div>
-        <div class="input-hint"> Build with dhruv ⚡ · <a href="https://corp.moneyforward.in/" target="_blank">Money
+        <div class="input-hint">Build with dhruv ⚡ · <a href="https://corp.moneyforward.in/" target="_blank">Money
             Forward India</a></div>
       </div>
 
+    </div>
+  </div>
+
+  <!-- Analytics Modal -->
+  <div id="analyticsModal" class="glass-modal">
+    <div class="modal-content">
+      <h2>Agent Analytics</h2>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-label">Latency (Last)</span>
+          <span class="stat-value" id="statLatency">0ms</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Tokens (Last)</span>
+          <span class="stat-value" id="statTokensLast">0</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Total Tokens</span>
+          <span class="stat-value" id="statTokensTotal">0</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Session Cost</span>
+          <span class="stat-value" id="statCostTotal">$0.00</span>
+        </div>
+      </div>
+      <button class="close-btn" onclick="toggleAnalytics()">Close</button>
     </div>
   </div>
 
@@ -1262,11 +1973,69 @@
 
     let msgCount = 0;
     let isLoading = false;
+    let sessionTotalTokens = 0;
+    let sessionTotalCost = 0;
 
-    // ── Backend config ──
+    function toggleAnalytics() {
+      const modal = document.getElementById('analyticsModal');
+      modal.classList.toggle('active');
+    }
+
+    /* ── Splash Screen ── */
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const splash = document.getElementById('splash-screen');
+        if (splash) {
+          splash.style.opacity = '0';
+          splash.style.visibility = 'hidden';
+          setTimeout(() => splash.remove(), 500);
+        }
+      }, 2000);
+    });
+
+    /* ── Backend config ── */
     const API_BASE = window.location.protocol === 'file:' ? 'http://127.0.0.1:8000' : '';
+    const SESSION_ID_KEY = 'mfi_chat_session_id';
 
-    // ── Mobile sidebar toggle ──
+    function getOrCreateSessionId() {
+      try {
+        const existing = localStorage.getItem(SESSION_ID_KEY);
+        if (existing) return existing;
+        const generated = (window.crypto && window.crypto.randomUUID)
+          ? window.crypto.randomUUID()
+          : `mfi-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+        localStorage.setItem(SESSION_ID_KEY, generated);
+        return generated;
+      } catch {
+        return `mfi-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+      }
+    }
+
+    const SESSION_ID = getOrCreateSessionId();
+
+    /* ── RAG status ── */
+    async function checkRagStatus() {
+      const el = document.getElementById('rag-status');
+      if (!el) return;
+      try {
+        const res = await fetch(`${API_BASE}/health`);
+        if (res.ok) {
+          el.textContent = ' RAG - Online '; 
+          el.style.background = '';
+          el.style.color = '';
+        } else throw new Error();
+      } catch {
+        el.textContent = 'RAG offline';
+        el.style.background = '#ffebee';
+        el.style.color = '#c62828';
+      }
+    }
+    window.addEventListener('DOMContentLoaded', () => {
+      checkRagStatus();
+      autoResize(inputEl);
+    });
+
+    /* ── Sidebar ── */
     function openSidebar() {
       sidebar.classList.add('open');
       backdrop.classList.add('active');
@@ -1279,56 +2048,319 @@
       document.body.style.overflow = '';
     }
 
-    // Close sidebar on swipe left (touch gesture)
-    let touchStartX = 0;
-    let touchCurrentX = 0;
-
-    sidebar.addEventListener('touchstart', (e) => {
-      touchStartX = e.touches[0].clientX;
-    }, { passive: true });
-
-    sidebar.addEventListener('touchmove', (e) => {
+    /* Swipe-to-close */
+    let touchStartX = 0, touchCurrentX = 0;
+    sidebar.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+    sidebar.addEventListener('touchmove', e => {
       touchCurrentX = e.touches[0].clientX;
       const diff = touchStartX - touchCurrentX;
-      if (diff > 0) {
-        sidebar.style.transform = `translateX(-${Math.min(diff, 300)}px)`;
-      }
+      if (diff > 0) sidebar.style.transform = `translateX(-${Math.min(diff, 300)}px)`;
     }, { passive: true });
-
     sidebar.addEventListener('touchend', () => {
-      const diff = touchStartX - touchCurrentX;
-      if (diff > 80) {
-        closeSidebar();
-      }
+      if (touchStartX - touchCurrentX > 80) closeSidebar();
       sidebar.style.transform = '';
     }, { passive: true });
 
-    // Handle visual viewport resize (mobile keyboard)
+    /* Keyboard open → scroll to bottom */
     if (window.visualViewport) {
       window.visualViewport.addEventListener('resize', () => {
-        const vvh = window.visualViewport.height;
-        document.documentElement.style.setProperty('--vvh', vvh + 'px');
-        // Scroll chat to bottom when keyboard opens
         messagesEl.scrollTop = messagesEl.scrollHeight;
       });
     }
 
+    /* ── Helpers ── */
     function autoResize(el) {
       el.style.height = 'auto';
       el.style.height = Math.min(el.scrollHeight, 140) + 'px';
     }
 
     function handleKey(e) {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        sendMessage();
-      }
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
     }
 
     function formatTime() {
       return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     }
 
+    /* ── Job card toggle ── */
+    function toggleCard(card) {
+      const wasExpanded = card.classList.contains('expanded');
+      document.querySelectorAll('.job-card').forEach(c => c.classList.remove('expanded'));
+      if (!wasExpanded) card.classList.add('expanded');
+    }
+
+    /* ── Bookmark toggle ── */
+    function toggleBookmark(btn, evt) {
+      if (evt) evt.stopPropagation();
+      btn.classList.toggle('saved');
+      const svg = btn.querySelector('svg');
+      if (btn.classList.contains('saved')) {
+        svg.setAttribute('fill', 'currentColor');
+        btn.title = 'Saved';
+      } else {
+        svg.setAttribute('fill', 'none');
+        btn.title = 'Save job';
+      }
+    }
+
+    /* ── Format bot text + job cards ── */
+    function formatText(text) {
+      function formatInline(md) {
+        const codeTokens = [];
+        let out = md.replace(/`([^`]+)`/g, (_, code) => {
+          const idx = codeTokens.push(code) - 1;
+          return `@@CODE${idx}@@`;
+        });
+        out = out
+          .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+          .replace(/\*(.+?)\*/g, '<em>$1</em>');
+        return out.replace(/@@CODE(\d+)@@/g, (_, idx) => `<code>${codeTokens[Number(idx)]}</code>`);
+      }
+
+      function splitTableRow(line) {
+        const t = line.trim().replace(/^\|/, '').replace(/\|$/, '');
+        return t.split('|').map(c => c.trim());
+      }
+
+      function isTableSeparator(line) {
+        return /^\s*\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|?\s*$/.test(line);
+      }
+
+      function renderMarkdown(md) {
+        const normalized = md
+          .replace(/```markdown\s*([\s\S]*?)```/gi, '$1')
+          .replace(/\r/g, '');
+        const lines = normalized.split('\n');
+        const html = [];
+        let i = 0;
+
+        while (i < lines.length) {
+          const line = lines[i];
+          const trimmed = line.trim();
+
+          if (!trimmed) {
+            i++;
+            continue;
+          }
+
+          const next = lines[i + 1] || '';
+          if (trimmed.includes('|') && isTableSeparator(next)) {
+            const header = splitTableRow(trimmed);
+            i += 2;
+            const rows = [];
+            while (i < lines.length && lines[i].trim().includes('|')) {
+              rows.push(splitTableRow(lines[i]));
+              i++;
+            }
+            html.push(
+              `<table><thead><tr>${header.map(c => `<th>${formatInline(c)}</th>`).join('')}</tr></thead>` +
+              `<tbody>${rows.map(r => `<tr>${r.map(c => `<td>${formatInline(c)}</td>`).join('')}</tr>`).join('')}</tbody></table>`
+            );
+            continue;
+          }
+
+          const ulMatch = /^\s*[-*+]\s+(.+)$/.exec(line);
+          if (ulMatch) {
+            const items = [];
+            while (i < lines.length) {
+              const curr = lines[i].trim();
+              if (!curr && i + 1 < lines.length) {
+                const peek = /^\s*[-*+]\s+(.+)$/.exec(lines[i + 1]);
+                if (peek) { i++; continue; }
+              }
+              const m = /^\s*[-*+]\s+(.+)$/.exec(lines[i]);
+              if (!m) break;
+              items.push(`<li>${formatInline(m[1].trim())}</li>`);
+              i++;
+            }
+            html.push(`<ul>${items.join('')}</ul>`);
+            continue;
+          }
+
+          const olMatch = /^\s*\d+[\.\)]\s+(.+)$/.exec(line);
+          if (olMatch) {
+            const items = [];
+            while (i < lines.length) {
+              const curr = lines[i].trim();
+              if (!curr && i + 1 < lines.length) {
+                const peek = /^\s*\d+[\.\)]\s+(.+)$/.exec(lines[i + 1]);
+                if (peek) { i++; continue; }
+              }
+              const m = /^\s*\d+[\.\)]\s+(.+)$/.exec(lines[i]);
+              if (!m) break;
+              items.push(`<li>${formatInline(m[1].trim())}</li>`);
+              i++;
+            }
+            html.push(`<ol>${items.join('')}</ol>`);
+            continue;
+          }
+
+          const para = [];
+          while (i < lines.length && lines[i].trim()) {
+            const current = lines[i];
+            const lookahead = lines[i + 1] || '';
+            if (
+              /^\s*[-*+]\s+/.test(current) ||
+              /^\s*\d+\.\s+/.test(current) ||
+              (current.trim().includes('|') && isTableSeparator(lookahead))
+            ) {
+              break;
+            }
+            para.push(current.trim());
+            i++;
+          }
+          if (para.length) {
+            html.push(`<p>${formatInline(para.join('<br/>'))}</p>`);
+          } else {
+            i++;
+          }
+        }
+
+        return html.join('');
+      }
+
+      /* Escape HTML */
+      let out = text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+
+      /* ── Job Card Parser ──
+         Token format (from backend):
+         ||JOB|Title|Dept|Location|Type|Experience|Tags(csv)|ApplyURL|Salary||
+      */
+      let jobCardsHTML = [];
+      let jobIdx = 0;
+
+      out = out.replace(
+        /(?:`?)\|\|JOB\|(.*?)\|(.*?)\|(.*?)\|(.*?)\|(.*?)\|(.*?)\|(.*?)\|(.*?)(?:\|(.*?))?\|\|(?:`?)/g,
+        (match, title, dept, loc, type, exp, tagsCSV, link, salary, descLegacy) => {
+          jobIdx++;
+          const titleText = title.trim();
+          const deptText = dept.trim();
+          const locText = loc.trim() || 'Chennai, India';
+          const typeText = type.trim() || 'Full-time';
+          const expText = exp.trim() || 'Experience not specified';
+          const linkHref = (link || '').trim();
+
+          /* Salary is field 9 (index 8). */
+          const salaryText = (salary || '').trim();
+          const descText = (descLegacy || '').trim();
+
+          /* Badge class */
+          let badgeClass = 'badge-default';
+          const dl = deptText.toLowerCase();
+          if (dl.includes('engine') || dl.includes('dev') || dl.includes('software')) badgeClass = 'badge-eng';
+          else if (dl.includes('data')) badgeClass = 'badge-data';
+          else if (dl.includes('product') || dl.includes('pm')) badgeClass = 'badge-pm';
+          else if (dl.includes('finance') || dl.includes('fin')) badgeClass = 'badge-fin';
+          else if (dl.includes('ops') || dl.includes('devops') || dl.includes('infra')) badgeClass = 'badge-ops';
+
+          /* Tags */
+          const tags = tagsCSV.split(',').map(t => t.trim()).filter(Boolean);
+          const tagsHTML = tags.map(t => `<span class="tag">${t}</span>`).join('');
+
+          /* SVG icons */
+          const locIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>`;
+          const typeIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>`;
+          const expIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>`;
+          const arrowIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>`;
+          const bookmarkIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>`;
+          const rupeeIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h12M6 8h12M10 21L6 8"/><path d="M6 13c5.333 0 8-2 8-5"/></svg>`;
+          const zohoIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>`;
+          const chevronIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>`;
+
+          /* Salary block */
+          const isUndisclosed = !salaryText || salaryText === 'Not disclosed' || salaryText === 'Not specified';
+          const salaryRowHTML = isUndisclosed ? '' : `
+            <div class="card-salary-row">
+              <span class="salary-badge">
+                ${rupeeIcon} ${salaryText}
+              </span>
+            </div>`;
+
+          /* Expandable description */
+          const expandedSection = descText
+            ? `<div class="card-expanded"><p>${descText}</p></div>`
+            : '';
+
+          /* Apply button */
+          const applyBtn = linkHref
+            ? `<a class="apply-btn" href="${linkHref}" target="_blank" onclick="event.stopPropagation()">Apply Now ${arrowIcon}</a>`
+            : `<button class="apply-btn" onclick="event.stopPropagation()">Apply Now ${arrowIcon}</button>`;
+
+          /* Expand hint */
+          const hasDetails = !!descText;
+          const expandHint = hasDetails
+            ? `<span class="posted-date" style="display:flex;align-items:center;gap:3px;">
+                ${zohoIcon} Zoho Recruit
+                <span style="margin-left:6px;opacity:.5;">${chevronIcon}</span>
+               </span>`
+            : `<span class="posted-date">${zohoIcon} Zoho Recruit</span>`;
+
+          jobCardsHTML.push(`
+            <div class="job-card" style="animation-delay:${(jobIdx - 1) * 0.07}s" onclick="toggleCard(this)">
+              <div class="card-accent-bar"></div>
+              <div class="card-body">
+                <div class="card-top">
+                  <div class="card-top-left">
+                    <div class="job-title">${titleText}</div>
+                    <span class="job-dept-badge ${badgeClass}">${deptText}</span>
+                  </div>
+                  <button class="card-bookmark" title="Save job" onclick="toggleBookmark(this, event)">${bookmarkIcon}</button>
+                </div>
+                <div class="card-meta">
+                  <span class="meta-item">${locIcon} ${locText}</span>
+                  <span class="meta-item">${typeIcon} ${typeText}</span>
+                  <span class="meta-item">${expIcon} ${expText}</span>
+                </div>
+                ${salaryRowHTML}
+                <div class="card-tags">${tagsHTML}</div>
+                ${expandedSection}
+              </div>
+              <div class="card-footer">
+                ${expandHint}
+                ${applyBtn}
+              </div>
+            </div>
+          `);
+
+          return ''; /* strip token from text */
+        }
+      );
+
+      /* ── Final Cleanup ── */
+      // Hide partial job tokens while they are still streaming
+      out = out.replace(/\|\|JOB\|[\s\S]*$/, '');
+
+      /* Build jobs block HTML separately — returned as second element */
+      let jobsBlockHTML = '';
+      if (jobCardsHTML.length > 0) {
+        const countPill = `<span class="count-pill">${jobCardsHTML.length}</span>`;
+        jobsBlockHTML = `
+          <div class="jobs-wrapper">
+            <div class="results-header">
+              <div class="live-dot"></div>
+              Open Positions ${countPill}
+            </div>
+            <div class="job-cards">
+              ${jobCardsHTML.join('')}
+            </div>
+            <div class="source-chip">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+              Sourced from Zoho Recruit
+            </div>
+          </div>
+        `;
+      }
+
+      /* Markdown formatting on text portion (lists, tables, emphasis, code). */
+      out = renderMarkdown(out);
+
+      return { text: out.trim(), jobsBlock: jobsBlockHTML };
+    }
+
+    /* ── Append message ── */
     function appendMessage(role, text) {
       if (welcomeEl) welcomeEl.style.display = 'none';
 
@@ -1339,61 +2371,75 @@
       row.className = 'msg-row ' + role;
 
       const avatarEl = document.createElement('div');
-      avatarEl.className = 'avatar avatar-' + role;
-      avatarEl.textContent = role === 'bot' ? 'MF' : 'You';
+      avatarEl.className = 'avatar avatar-' + (role === 'error' ? 'bot' : role);
+      avatarEl.textContent = role === 'user' ? 'You' : 'MF';
 
       const bubbleWrap = document.createElement('div');
       bubbleWrap.className = 'bubble-wrap';
 
-      const bubble = document.createElement('div');
-      bubble.className = 'bubble bubble-' + role;
-      if (role === 'error') {
-        bubble.className = 'bubble bubble-bot error-bubble';
-        avatarEl.className = 'avatar avatar-bot';
+      /* For bot messages, split text from jobs cards */
+      if (role === 'bot' || role === 'error') {
+        const formatted = formatText(text);
+        const hasJobs = !!formatted.jobsBlock;
+
+        if (hasJobs) bubbleWrap.classList.add('has-jobs');
+
+        /* Only render text bubble if there's actual text content */
+        const cleanText = formatted.text.replace(/<br\/?>/g, '').trim();
+        if (cleanText) {
+          const bubble = document.createElement('div');
+          bubble.className = 'bubble bubble-' + (role === 'error' ? 'bot error-bubble' : role);
+          bubble.innerHTML = formatted.text;
+          bubbleWrap.appendChild(bubble);
+        }
+
+        /* Jobs block rendered outside bubble, inside wrap */
+        if (hasJobs) {
+          const jobsEl = document.createElement('div');
+          jobsEl.innerHTML = formatted.jobsBlock;
+          bubbleWrap.appendChild(jobsEl.firstElementChild);
+        }
+      } else {
+        /* User messages — plain text only */
+        const bubble = document.createElement('div');
+        bubble.className = 'bubble bubble-user';
+        const escaped = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br/>');
+        bubble.innerHTML = escaped;
+        bubbleWrap.appendChild(bubble);
       }
-      bubble.innerHTML = formatText(text);
 
       const time = document.createElement('div');
       time.className = 'bubble-time';
       time.textContent = formatTime();
-
-      bubbleWrap.appendChild(bubble);
       bubbleWrap.appendChild(time);
 
       row.appendChild(avatarEl);
       row.appendChild(bubbleWrap);
-
       messagesEl.appendChild(row);
       messagesEl.scrollTop = messagesEl.scrollHeight;
-      return bubble;
+      return bubbleWrap;
     }
 
-    function formatText(text) {
-      return text
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-        .replace(/\*(.*?)\*/g, '<em>$1</em>')
-        .replace(/`(.*?)`/g, '<code>$1</code>')
-        .replace(/\n/g, '<br/>');
-    }
-
+    /* ── Typing indicator ── */
     function addTypingIndicator() {
       const row = document.createElement('div');
       row.className = 'msg-row bot';
       row.id = 'typing';
 
-      const avatarEl = document.createElement('div');
-      avatarEl.className = 'avatar avatar-bot';
-      avatarEl.textContent = 'MF';
+      const av = document.createElement('div');
+      av.className = 'avatar avatar-bot';
+      av.textContent = 'MF';
+
+      const bubbleWrap = document.createElement('div');
+      bubbleWrap.className = 'bubble-wrap';
 
       const bubble = document.createElement('div');
       bubble.className = 'bubble bubble-bot';
       bubble.innerHTML = '<div class="typing-indicator"><span></span><span></span><span></span></div>';
 
-      row.appendChild(avatarEl);
-      row.appendChild(bubble);
+      bubbleWrap.appendChild(bubble);
+      row.appendChild(av);
+      row.appendChild(bubbleWrap);
       messagesEl.appendChild(row);
       messagesEl.scrollTop = messagesEl.scrollHeight;
     }
@@ -1403,13 +2449,12 @@
       if (el) el.remove();
     }
 
+    /* ── Send message ── */
     async function sendMessage() {
       const query = inputEl.value.trim();
       if (!query || isLoading) return;
 
-      // Close sidebar on mobile after sending via quick prompt
       closeSidebar();
-
       inputEl.value = '';
       inputEl.style.height = 'auto';
       sendBtn.disabled = true;
@@ -1422,17 +2467,94 @@
         const res = await fetch(`${API_BASE}/chat`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query })
+          body: JSON.stringify({ query, session_id: SESSION_ID })
         });
 
         if (!res.ok) throw new Error(`Server error ${res.status}`);
-        const data = await res.json();
 
         removeTypingIndicator();
-        appendMessage('bot', data.result || data.answer || 'No response.');
+        const bubbleWrap = appendMessage('bot', '');
+        
+        // Setup initial elements so we don't thrash DOM
+        const bubble = document.createElement('div');
+        bubble.className = 'bubble bubble-bot';
+        bubble.style.display = 'none';
+        
+        const jobsContainer = document.createElement('div');
+        jobsContainer.style.display = 'none';
+        
+        const time = document.createElement('div');
+        time.className = 'bubble-time';
+        time.textContent = '...';
+        
+        bubbleWrap.appendChild(bubble);
+        bubbleWrap.appendChild(jobsContainer);
+        bubbleWrap.appendChild(time);
+
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder('utf-8');
+        let fullText = '';
+        let buffer = '';
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          
+          buffer += decoder.decode(value, { stream: true });
+          const parts = buffer.split('\n\n');
+          buffer = parts.pop() || '';
+          
+          for (const part of parts) {
+            if (part.startsWith('data: ')) {
+              const dataStr = part.slice(6).trim();
+              if (dataStr === '[DONE]' || dataStr === '[CACHED]') continue;
+              if (!dataStr) continue;
+              try {
+                const parsed = JSON.parse(dataStr);
+                if (parsed.stats) {
+                  document.getElementById('statLatency').textContent = parsed.stats.latency_ms + 'ms';
+                  document.getElementById('statTokensLast').textContent = parsed.stats.total_tokens;
+                  sessionTotalTokens += parsed.stats.total_tokens;
+                  sessionTotalCost += parsed.stats.cost_usd;
+                  document.getElementById('statTokensTotal').textContent = sessionTotalTokens;
+                  document.getElementById('statCostTotal').textContent = '$' + sessionTotalCost.toFixed(5);
+                } else if (parsed.content) {
+                  fullText += parsed.content;
+                }
+              } catch (e) {
+                console.error("SSE parse error", e, dataStr);
+              }
+            }
+          }
+          
+          if (fullText) {
+            const formatted = formatText(fullText);
+            
+            // Always show the bubble if there's any content (text or hidden job) 
+            // so the user sees the streaming cursor.
+            bubble.style.display = 'block';
+            bubble.innerHTML = formatted.text + '<span class="streaming-cursor"></span>';
+            
+            if (formatted.jobsBlock) {
+              jobsContainer.style.display = 'block';
+              jobsContainer.innerHTML = formatted.jobsBlock;
+              bubbleWrap.classList.add('has-jobs');
+            }
+            
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+          }
+        }
+        
+        // Remove cursor when done and set final time
+        const cursor = bubble.querySelector('.streaming-cursor');
+        if (cursor) cursor.remove();
+        time.textContent = formatTime();
+
       } catch (err) {
         removeTypingIndicator();
-        appendMessage('error', 'Could not reach the backend. Make sure your Python server is running.\n\nError: ' + err.message);
+        appendMessage('error',
+          'Could not reach the backend. Make sure your Python server is running.\n\nError: ' + err.message
+        );
       } finally {
         sendBtn.disabled = false;
         isLoading = false;
@@ -1445,6 +2567,7 @@
       sendMessage();
     }
 
+    /* ── Refresh jobs ── */
     async function refreshJobs() {
       if (isLoading) return;
       isLoading = true;
