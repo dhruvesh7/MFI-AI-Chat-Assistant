@@ -13,6 +13,7 @@ User Query (Streaming via SSE)
 FastAPI (api.py)
     ├── Memory Manager (ConversationBufferMemory per session)
     ├── QueryCache (In-memory storage for redundant queries)
+    ├── Analytics Agent (Analyse.py: Latency, Tokens, Cost)
     └── SmartRetriever (chatbot.py)
          ├── Query expansion (expand acronyms, policy keywords)
          ├── MMR vector search over ChromaDB (k=8, fetch_k=24)
@@ -20,8 +21,8 @@ FastAPI (api.py)
          └── Injects live jobs document for job-related queries
     │
     ▼
-LangChain RetrievalQA
-    └── GPT-4o-mini → Streaming response → Web UI
+LangChain ConversationalRetrievalChain
+    └── GPT-4o-mini → Streaming response + Stats → Web UI
 ```
 
 ---
@@ -34,10 +35,13 @@ LangChain RetrievalQA
 ├── ingest.py              # Ingests data/ → vector_db/
 ├── chatbot.py             # Core RAG logic + CLI
 ├── api.py                 # FastAPI HTTP wrapper (Streaming SSE)
+├── Analyse.py             # Performance analytics & cost tracking
 ├── mfi_chatbot.html       # Premium Frontend UI (served by FastAPI)
 ├── assets/                # Local UI assets (mfi_icon.png)
 ├── requirements.txt       # Python dependencies
-└── .env                   # API keys (not committed)
+├── .env                   # API keys (not committed)
+├── SETUP_GUIDE.md         # Detailed local setup instructions
+└── DEPLOYMENT_GUIDE.md    # Instructions for Cloud deployment (HF/Render)
 ```
 
 ---
@@ -125,7 +129,13 @@ Loads all `.md` files from `data/`, splits them into 800-token chunks (200 overl
   - Prepends the live jobs document for career/role-related queries
 
 ### `api.py`
-Thin FastAPI wrapper exposing the chatbot as an HTTP service. Loads the vector DB and jobs once on startup, reuses across requests.
+Thin FastAPI wrapper exposing the chatbot as an HTTP service. Loads the vector DB and jobs once on startup, handles SSE streaming, and integrates the `analytics_agent` for real-time monitoring.
+
+### `Analyse.py`
+Standalone agent that tracks the performance of every query. It calculates:
+- **Latency**: Time-to-first-token and total response time.
+- **Tokens**: Exact count of prompt and completion tokens via `tiktoken`.
+- **Cost**: Real-time USD cost calculation based on GPT-4o-mini pricing.
 
 ---
 
@@ -137,6 +147,7 @@ Thin FastAPI wrapper exposing the chatbot as an HTTP service. Loads the vector D
 | `k` | 8 | Chunks returned to the LLM |
 | `fetch_k` | 24 | Candidate pool before MMR re-ranking |
 | `lambda_mult` | 0.55 | Balance relevance vs. diversity |
+| `Embeddings` | `text-embedding-3-small` | High-efficiency OpenAI embeddings |
 
 ---
 

@@ -11,10 +11,11 @@ A production-ready Retrieval-Augmented Generation (RAG) chatbot built for **Mone
 | Layer | Technology |
 |-------|-----------|
 | LLM | OpenAI GPT-4o-mini |
-| Embeddings | OpenAI `text-embedding-ada-002` |
+| Embeddings | OpenAI `text-embedding-3-small` |
 | Vector Store | ChromaDB (local, persistent) |
-| RAG Framework | LangChain (`RetrievalQA`, `BaseRetriever`) |
+| RAG Framework | LangChain (`ConversationalRetrievalChain`, `BaseRetriever`) |
 | API | FastAPI |
+| Analytics | Custom `Analyse.py` (Real-time Latency, Tokens, Cost) |
 | Live Data | Zoho Recruit RSS Feed (HTTP) |
 | Config | python-dotenv |
 
@@ -42,8 +43,13 @@ Uses Maximal Marginal Relevance (fetch_k=24, k=8, λ=0.55) to balance relevance 
 - Interactive CLI for local testing.
 - FastAPI HTTP API with a **premium, glassmorphic Web UI** featuring real-time typing effects, job card visualization, and mobile responsiveness.
 
+**Real-time Agent Analytics**
+- Integrated `Analyse.py` module to track and display session-wide and per-query statistics.
+- Tracks **Latency (ms)**, **Prompt/Completion Tokens**, and **Session Cost (USD)**.
+- Premium glassmorphic analytics modal accessible via the UI.
+
 **Live Job Sync**
-Jobs are fetched from the MFI Zoho Recruit RSS feed on startup and on demand via `/refresh-jobs` — no re-ingestion required for career queries.
+- Jobs are fetched from the MFI Zoho Recruit RSS feed on startup and on demand via `/refresh-jobs` — no re-ingestion required for career queries.
 
 ---
 
@@ -52,17 +58,21 @@ Jobs are fetched from the MFI Zoho Recruit RSS feed on startup and on demand via
 ```
 Query → API layer (Session Memory + Cache)
            ↓
+        Analytics Agent (Start Timer)
+           ↓
         SmartRetriever
            ├─ Expand query terms
            ├─ MMR search on ChromaDB (static KB)
            ├─ Re-rank by topic (privacy / security / jobs)
            └─ Inject live jobs doc if job-related
-                         ↓
-               LangChain RetrievalQA
-                         ↓
-               GPT-4o-mini (Streaming output)
-                         ↓
-                SSE Stream → Web UI
+                          ↓
+                ConversationalRetrievalChain
+                          ↓
+                GPT-4o-mini (Streaming output)
+                          ↓
+        Analytics Agent (Tokens + Cost Calculation)
+                          ↓
+                 SSE Stream (Text + Stats) → Web UI
 ```
 
 ---
@@ -89,4 +99,3 @@ Sufficient capability for grounded Q&A over structured documents, at significant
 - No authentication on the API endpoints
 - Job descriptions are truncated at 12,000 characters to control context size
 - Could add hybrid search (BM25 + dense) for improved recall on exact-match queries
-- Conversation history / multi-turn support not yet implemented

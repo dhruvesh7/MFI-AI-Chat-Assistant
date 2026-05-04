@@ -7,7 +7,7 @@ This comprehensive guide will walk you through setting up and running the MFI RA
 Before starting, ensure you have the following installed and obtained:
 
 - **Python 3.10 or higher**: Verify your installation by running `python --version` in your terminal.
-- **OpenAI API Key**: The chatbot relies on OpenAI's `text-embedding-ada-002` for vector embeddings and `GPT-4o-mini` for generation.
+- **OpenAI API Key**: The chatbot relies on OpenAI's `text-embedding-3-small` for vector embeddings and `GPT-4o-mini` for generation and analytics.
   - Obtain an API key by signing up at the [OpenAI Platform](https://platform.openai.com).
   - Navigate to the **API keys** section in your dashboard and generate a new secret key.
 
@@ -76,7 +76,7 @@ uvicorn api:app --port 8000
 Once the server has started, open your web browser and navigate to:
 👉 [http://localhost:8000](http://localhost:8000)
 
-> **Pro Tip:** The new UI supports **Real-time Streaming**. You will see the chatbot's response appear chunk-by-chunk as it is generated, providing a much more interactive experience.
+> **Pro Tip:** The new UI supports **Real-time Streaming** and **Agent Analytics**. You can monitor query latency, token usage, and costs by clicking the analytics icon (📈) in the header.
 
 **For network access (e.g., testing on your phone):**
 To allow other devices on your local Wi-Fi network to connect to the chatbot, bind the server to `0.0.0.0`:
@@ -101,21 +101,9 @@ The **Live Jobs Feed** does NOT require ingestion; it is fetched fresh every tim
 
 ---
 
-## 8. Verifying the Setup
-
-### Option B: Command Line Interface (CLI)
-You can directly interact with the chatbot in your terminal for quick testing:
-
-```bash
-python chatbot.py
-```
-- Type any question to interact with the LLM.
-- Type `refresh jobs` to re-fetch live listings manually.
-- Type `exit` to quit the CLI.
-
 ---
 
-## 7. Verifying the Setup
+## 9. Verifying the Setup
 
 To make sure everything is working correctly, ask a question such as:
 > *"What is Money Forward India's privacy policy?"*
