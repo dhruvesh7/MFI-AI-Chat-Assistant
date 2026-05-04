@@ -573,15 +573,15 @@
     .bubble ol {
       margin: 0.6em 0 0.6em 1.4em;
     }
-    
+
     .bubble ol {
       list-style-type: decimal;
     }
-    
+
     .bubble ul {
       list-style-type: disc;
     }
-    
+
     .bubble li {
       margin: 0.3em 0;
       display: list-item;
@@ -688,8 +688,15 @@
     }
 
     @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0; }
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0;
+      }
     }
 
     /* ── Welcome ── */
@@ -1473,16 +1480,19 @@
       transition: all var(--transition);
       box-shadow: var(--shadow-sm);
     }
+
     .analytics-toggle:hover {
       background: var(--orange-light);
       color: var(--orange);
       border-color: rgba(232, 120, 42, 0.3);
       transform: scale(1.05);
     }
+
     .analytics-toggle svg {
       width: 20px;
       height: 20px;
     }
+
     .glass-modal {
       position: fixed;
       inset: 0;
@@ -1497,10 +1507,12 @@
       visibility: hidden;
       transition: all 0.3s ease;
     }
+
     .glass-modal.active {
       opacity: 1;
       visibility: visible;
     }
+
     .glass-modal .modal-content {
       background: rgba(255, 255, 255, 0.9);
       border: 1px solid rgba(255, 255, 255, 0.2);
@@ -1508,25 +1520,29 @@
       padding: 30px;
       width: 90%;
       max-width: 400px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
       transform: scale(0.95) translateY(10px);
       transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
+
     .glass-modal.active .modal-content {
       transform: scale(1) translateY(0);
     }
+
     .glass-modal h2 {
       font-family: var(--font-heading);
       margin-bottom: 20px;
       font-size: 20px;
       color: var(--text-primary);
     }
+
     .stats-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 15px;
       margin-bottom: 25px;
     }
+
     .stat-card {
       background: var(--white);
       border-radius: 16px;
@@ -1534,6 +1550,7 @@
       border: 1px solid var(--gray-200);
       box-shadow: var(--shadow-sm);
     }
+
     .stat-label {
       font-family: var(--font-ui);
       font-size: 11px;
@@ -1543,12 +1560,14 @@
       display: block;
       margin-bottom: 5px;
     }
+
     .stat-value {
       font-family: var(--font-heading);
       font-size: 18px;
       font-weight: 700;
       color: var(--orange);
     }
+
     .close-btn {
       width: 100%;
       padding: 12px;
@@ -1561,6 +1580,7 @@
       cursor: pointer;
       transition: background 0.2s;
     }
+
     .close-btn:hover {
       background: var(--gray-200);
     }
@@ -1798,9 +1818,8 @@
 
   <!-- Splash Screen -->
   <div id="splash-screen">
-    <img
-      src="https://corp.moneyforward.com/wp-content/uploads/2025/09/onboarding_long.gif"
-      alt="Money Forward India" class="splash-logo" />
+    <img src="https://corp.moneyforward.com/wp-content/uploads/2025/09/onboarding_long.gif" alt="Money Forward India"
+      class="splash-logo" />
     <div class="splash-loader"></div>
   </div>
 
@@ -1869,16 +1888,24 @@
       <div class="chat-header">
         <div class="chat-header-left">
           <button class="menu-toggle" id="menu-toggle" onclick="openSidebar()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
           </button>
           <div class="chat-header-icon">
             <img src="/assets/mfi_icon.png" alt="MFI Logo" />
           </div>
-          <h1>AI Assistant <span>by Money Forward India</span></h1>
+          <h1> me:mo <span>by Money Forward India</span></h1>
         </div>
         <div class="header-meta">
           <button class="analytics-toggle" id="analyticsBtn" onclick="toggleAnalytics()" title="Agent Analytics">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M18 20V10M12 20V4M6 20v-6" />
+            </svg>
           </button>
           <span class="model-badge" id="rag-status">Checking RAG…</span>
           <span id="msg-count">0 messages</span>
@@ -2020,7 +2047,7 @@
       try {
         const res = await fetch(`${API_BASE}/health`);
         if (res.ok) {
-          el.textContent = ' RAG - Online '; 
+          el.textContent = ' RAG - Online ';
           el.style.background = '';
           el.style.color = '';
         } else throw new Error();
@@ -2403,7 +2430,7 @@
         /* User messages — plain text only */
         const bubble = document.createElement('div');
         bubble.className = 'bubble bubble-user';
-        const escaped = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br/>');
+        const escaped = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br/>');
         bubble.innerHTML = escaped;
         bubbleWrap.appendChild(bubble);
       }
@@ -2474,19 +2501,19 @@
 
         removeTypingIndicator();
         const bubbleWrap = appendMessage('bot', '');
-        
+
         // Setup initial elements so we don't thrash DOM
         const bubble = document.createElement('div');
         bubble.className = 'bubble bubble-bot';
         bubble.style.display = 'none';
-        
+
         const jobsContainer = document.createElement('div');
         jobsContainer.style.display = 'none';
-        
+
         const time = document.createElement('div');
         time.className = 'bubble-time';
         time.textContent = '...';
-        
+
         bubbleWrap.appendChild(bubble);
         bubbleWrap.appendChild(jobsContainer);
         bubbleWrap.appendChild(time);
@@ -2499,11 +2526,11 @@
         while (true) {
           const { done, value } = await reader.read();
           if (done) break;
-          
+
           buffer += decoder.decode(value, { stream: true });
           const parts = buffer.split('\n\n');
           buffer = parts.pop() || '';
-          
+
           for (const part of parts) {
             if (part.startsWith('data: ')) {
               const dataStr = part.slice(6).trim();
@@ -2526,25 +2553,25 @@
               }
             }
           }
-          
+
           if (fullText) {
             const formatted = formatText(fullText);
-            
+
             // Always show the bubble if there's any content (text or hidden job) 
             // so the user sees the streaming cursor.
             bubble.style.display = 'block';
             bubble.innerHTML = formatted.text + '<span class="streaming-cursor"></span>';
-            
+
             if (formatted.jobsBlock) {
               jobsContainer.style.display = 'block';
               jobsContainer.innerHTML = formatted.jobsBlock;
               bubbleWrap.classList.add('has-jobs');
             }
-            
+
             messagesEl.scrollTop = messagesEl.scrollHeight;
           }
         }
-        
+
         // Remove cursor when done and set final time
         const cursor = bubble.querySelector('.streaming-cursor');
         if (cursor) cursor.remove();
