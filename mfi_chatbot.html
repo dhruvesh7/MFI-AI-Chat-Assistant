@@ -390,29 +390,35 @@
     }
 
     .chat-header-icon {
-      width: 40px;
-      height: 40px;
+      width: auto;
+      height: 52px;
       background: none;
-      border-radius: 12px;
+      border-radius: 0;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      overflow: hidden;
+      box-shadow: none;
+      border: none;
+      overflow: visible;
+      cursor: pointer;
     }
 
     .chat-header-icon svg {
-      width: 40px;
-      height: 40px;
+      width: 44px;
+      height: 44px;
     }
 
     .chat-header-icon img {
-      width: 40px;
-      height: 40px;
+      height: 48px;
+      width: auto;
       object-fit: contain;
-      background: #fff;
-      border-radius: 8px;
-      padding: 2px;
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.06));
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .chat-header-icon:hover img {
+      transform: scale(1.15) rotate(-4deg);
     }
 
     .chat-header h1 {
@@ -443,8 +449,8 @@
     }
 
     .model-badge {
-      background: var(--orange-light);
-      color: var(--orange);
+      background: #ecfdf5;
+      color: #059669;
       font-family: var(--font-ui);
       font-size: 11px;
       font-weight: 600;
@@ -452,6 +458,7 @@
       border-radius: 20px;
       letter-spacing: 0.01em;
       white-space: nowrap;
+      border: 1px solid rgba(5, 150, 105, 0.15);
     }
 
     /* ── Messages ── */
@@ -1660,9 +1667,11 @@
       }
 
       .chat-header-icon {
-        width: 34px;
-        height: 34px;
-        border-radius: 10px;
+        width: auto;
+        height: 38px;
+        background: none;
+        box-shadow: none;
+        border: none;
       }
 
       .chat-header-icon svg {
@@ -1728,15 +1737,15 @@
       }
 
       .welcome-icon {
-        width: 52px;
-        height: 52px;
-        border-radius: 16px;
+        width: 180px;
+        height: 180px;
+        border-radius: 0;
       }
 
       .welcome-icon svg,
       .welcome-icon img {
-        width: 24px;
-        height: 24px;
+        width: 100%;
+        height: 100%;
       }
 
       .welcome h2 {
@@ -1910,7 +1919,7 @@
             </svg>
           </button>
           <div class="chat-header-icon">
-            <img src="/assets/mfi_icon.png" alt="MFI Logo" />
+            <img src="/assets/memo.png" alt="me:mo Mascot" title="me:mo" />
           </div>
           <h1> me:mo <span>by Money Forward India</span></h1>
         </div>
@@ -2413,7 +2422,11 @@
 
       const avatarEl = document.createElement('div');
       avatarEl.className = 'avatar avatar-' + (role === 'error' ? 'bot' : role);
-      avatarEl.textContent = role === 'user' ? 'You' : 'MF';
+      if (role === 'user') {
+        avatarEl.textContent = 'You';
+      } else {
+        avatarEl.innerHTML = '<img src="/assets/mfi_icon.png" alt="MF" style="width:100%;height:100%;object-fit:contain;background:#fff;border-radius:inherit;padding:2px;box-sizing:border-box;" />';
+      }
 
       const bubbleWrap = document.createElement('div');
       bubbleWrap.className = 'bubble-wrap';
@@ -2469,7 +2482,7 @@
 
       const av = document.createElement('div');
       av.className = 'avatar avatar-bot';
-      av.textContent = 'MF';
+      av.innerHTML = '<img src="/assets/mfi_icon.png" alt="MF" style="width:100%;height:100%;object-fit:contain;background:#fff;border-radius:inherit;padding:2px;box-sizing:border-box;" />';
 
       const bubbleWrap = document.createElement('div');
       bubbleWrap.className = 'bubble-wrap';
@@ -2534,8 +2547,10 @@
 
         const reader = res.body.getReader();
         const decoder = new TextDecoder('utf-8');
-        let fullText = '';
-        let buffer = '';
+        // Streaming loop
+        let buffer = "";
+        let fullText = "";
+        let lastJobsBlock = "";
 
         while (true) {
           const { done, value } = await reader.read();
@@ -2548,19 +2563,20 @@
           for (const part of parts) {
             if (part.startsWith('data: ')) {
               const dataStr = part.slice(6).trim();
-              if (dataStr === '[DONE]' || dataStr === '[CACHED]') continue;
-              if (!dataStr) continue;
+              if (dataStr === "[DONE]") break;
+              if (dataStr === "[CACHED]") break;
               try {
-                const parsed = JSON.parse(dataStr);
-                if (parsed.stats) {
-                  document.getElementById('statLatency').textContent = parsed.stats.latency_ms + 'ms';
-                  document.getElementById('statTokensLast').textContent = parsed.stats.total_tokens;
-                  sessionTotalTokens += parsed.stats.total_tokens;
-                  sessionTotalCost += parsed.stats.cost_usd;
+                const data = JSON.parse(dataStr);
+                if (data.content) {
+                  fullText += data.content;
+                }
+                if (data.stats) {
+                  document.getElementById('statLatency').textContent = data.stats.latency_ms + 'ms';
+                  document.getElementById('statTokensLast').textContent = data.stats.total_tokens;
+                  sessionTotalTokens += data.stats.total_tokens;
+                  sessionTotalCost += data.stats.cost_usd;
                   document.getElementById('statTokensTotal').textContent = sessionTotalTokens;
                   document.getElementById('statCostTotal').textContent = '$' + sessionTotalCost.toFixed(5);
-                } else if (parsed.content) {
-                  fullText += parsed.content;
                 }
               } catch (e) {
                 console.error("SSE parse error", e, dataStr);
@@ -2571,14 +2587,23 @@
           if (fullText) {
             const formatted = formatText(fullText);
 
-            // Always show the bubble if there's any content (text or hidden job) 
-            // so the user sees the streaming cursor.
-            bubble.style.display = 'block';
-            bubble.innerHTML = formatted.text + '<span class="streaming-cursor"></span>';
+            // 1. Update text bubble
+            const hasActualText = formatted.text.replace(/<[^>]*>/g, '').trim().length > 0;
+            const isJobStreaming = fullText.includes('||JOB|') && !formatted.jobsBlock;
 
-            if (formatted.jobsBlock) {
+            if (hasActualText) {
+              bubble.style.display = 'block';
+              bubble.innerHTML = formatted.text + '<span class="streaming-cursor"></span>';
+            } else if (isJobStreaming) {
+              bubble.style.display = 'block';
+              bubble.innerHTML = '<span class="streaming-cursor"></span> <span style="font-size: 0.85em; color: var(--gray-500); font-style: italic;">Identifying open positions...</span>';
+            }
+
+            // 2. Update jobs only if they've changed to prevent flickering
+            if (formatted.jobsBlock && formatted.jobsBlock !== lastJobsBlock) {
               jobsContainer.style.display = 'block';
               jobsContainer.innerHTML = formatted.jobsBlock;
+              lastJobsBlock = formatted.jobsBlock;
               bubbleWrap.classList.add('has-jobs');
             }
 
