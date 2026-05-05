@@ -41,13 +41,15 @@ RAG_CHAT_PROMPT = ChatPromptTemplate.from_messages(
             "system",
             "You are an assistant for Money Forward India. Answer using ONLY the "
             "information in the context below. If the context does not contain enough "
-            "information, search for the information on the web and answer.\n\n"
+            "information, tell the user you don't know but offer to help with other company-related topics.\n\n"
             "IMPORTANT: When returning a live job opening, you MUST format it exactly like this template and do NOT use standard markdown for it:\n"
             "||JOB|Title|Department|Location|Type|Experience|Top 3 Skills (CSV)|ApplyLink|Salary||\n"
             "For example:\n"
             "||JOB|Data Engineer|Data|Chennai, India|Full-time|2-5 yrs exp|Python, Spark, GCP|https://link...|Not disclosed||\n"
             "For the Salary field: extract it from the job description if mentioned (e.g. '₹12–18 LPA', '$80k–$100k'). If not found, write 'Not disclosed'.\n"
-            "Put 'Not specified' for any other missing field.\n\n{context}",
+            "Put 'Not specified' for any other missing field.\n\n"
+            "CHAT HISTORY:\n{chat_history}\n\n"
+            "CONTEXT:\n{context}",
         ),
         ("human", "{question}"),
     ]
@@ -162,13 +164,19 @@ async def chat(req: ChatRequest) -> StreamingResponse:
         )
 
     memory = get_session_memory(session_id)
+    chat_history_messages = memory.chat_memory.messages
+    chat_history_text = "\n".join([f"{'User' if i%2==0 else 'Assistant'}: {msg.content}" for i, msg in enumerate(chat_history_messages)])
 
     # Get context from retriever for streaming
     docs = smart_retriever._get_relevant_documents(req.query)
     context = "\n\n".join(d.page_content for d in docs)
 
-    # Build prompt with context
-    prompt = RAG_CHAT_PROMPT.format_messages(question=req.query, context=context)
+    # Build prompt with context and history
+    prompt = RAG_CHAT_PROMPT.format_messages(
+        question=req.query, 
+        context=context,
+        chat_history=chat_history_text
+    )
     prompt_text = "\n".join([msg.content for msg in prompt])
 
     async def event_generator():
@@ -185,6 +193,9 @@ async def chat(req: ChatRequest) -> StreamingResponse:
                 full_response += chunk.content
                 data_str = json.dumps({"content": chunk.content})
                 yield f"data: {data_str}\n\n"
+
+        # Update memory
+        memory.save_context({"question": req.query}, {"answer": full_response})
 
         # Cache the response
         query_cache.put(req.query, full_response)

@@ -48,7 +48,19 @@ def _rss_html_to_plain(raw: str) -> str:
     """Turn RSS item HTML into readable plain text for RAG."""
     if not raw:
         return ""
-    t = html.unescape(raw)
+    
+    # Pre-clean known problematic bytes/sequences before unescaping
+    t = raw.replace("\xa0", " ")  # Non-breaking space
+    t = t.replace("\u2013", "-")  # En dash
+    t = t.replace("\u2014", "--") # Em dash
+    t = t.replace("\u2018", "'").replace("\u2019", "'")
+    t = t.replace("\u201c", '"').replace("\u201d", '"')
+    t = t.replace("\ufffd", " ") # Replacement char
+    
+    # Handle the specific corrupt pattern if it appears as a string
+    t = t.replace("", " ")
+    
+    t = html.unescape(t)
     t = re.sub(r"(?is)<script[^>]*>.*?</script>", " ", t)
     t = re.sub(r"(?is)<style[^>]*>.*?</style>", " ", t)
     t = re.sub(r"(?i)<br\s*/?>", "\n", t)
@@ -80,14 +92,21 @@ def fetch_live_jobs():
     try:
         r = requests.get(JOBS_RSS_URL, headers=headers, timeout=15)
         r.raise_for_status()
+        
+        # Suspect non-utf8 source mangling; force careful decoding
+        r.encoding = r.apparent_encoding or "utf-8"
+        content_text = r.text
+        
+        # Clean the raw text before passing to XML parser if it contains problematic chars
+        content_text = content_text.replace("\ufffd", " ")
 
-        root = ET.fromstring(r.content)
+        root = ET.fromstring(content_text.encode("utf-8"))
 
         for item in root.findall(".//item"):
             t_el, l_el, d_el = item.find("title"), item.find("link"), item.find("description")
             if t_el is None or not (t_el.text or "").strip():
                 continue
-            title = html.unescape(t_el.text.strip())
+            title = _rss_html_to_plain(t_el.text or "")
             link = (l_el.text or "").strip() if l_el is not None else JOBS_URL
             raw_desc = d_el.text if d_el is not None and d_el.text else ""
             desc = html.unescape(raw_desc)

@@ -413,6 +413,7 @@
       height: 48px;
       width: auto;
       object-fit: contain;
+      mix-blend-mode: multiply;
       filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.06));
       transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
@@ -2470,7 +2471,11 @@
       row.appendChild(avatarEl);
       row.appendChild(bubbleWrap);
       messagesEl.appendChild(row);
-      messagesEl.scrollTop = messagesEl.scrollHeight;
+      
+      const isNearBottom = messagesEl.scrollHeight - messagesEl.scrollTop - messagesEl.clientHeight < 150;
+      if (isNearBottom) {
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+      }
       return bubbleWrap;
     }
 
@@ -2495,6 +2500,8 @@
       row.appendChild(av);
       row.appendChild(bubbleWrap);
       messagesEl.appendChild(row);
+      
+      // Force scroll when user sends or typing starts
       messagesEl.scrollTop = messagesEl.scrollHeight;
     }
 
@@ -2606,8 +2613,11 @@
               lastJobsBlock = formatted.jobsBlock;
               bubbleWrap.classList.add('has-jobs');
             }
-
-            messagesEl.scrollTop = messagesEl.scrollHeight;
+            
+            const isNearBottom = messagesEl.scrollHeight - messagesEl.scrollTop - messagesEl.clientHeight < 150;
+            if (isNearBottom) {
+              messagesEl.scrollTop = messagesEl.scrollHeight;
+            }
           }
         }
 
