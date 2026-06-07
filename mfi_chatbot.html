@@ -741,7 +741,7 @@
       mix-blend-mode: multiply;
       transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
       cursor: pointer;
-      filter: drop-shadow(0 10px 20px rgba(0,0,0,0.08));
+      filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.08));
     }
 
     .welcome-icon img:hover {
@@ -749,8 +749,15 @@
     }
 
     @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-15px); }
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-15px);
+      }
     }
 
     .welcome h2 {
@@ -1488,6 +1495,31 @@
     }
 
     /* ── Analytics Modal ── */
+    .lang-toggle {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      border: 1px solid var(--gray-200);
+      background: var(--white);
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all var(--transition);
+      box-shadow: var(--shadow-sm);
+      font-family: var(--font-ui);
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .lang-toggle:hover {
+      background: var(--orange-light);
+      color: var(--orange);
+      border-color: rgba(232, 120, 42, 0.3);
+      transform: scale(1.05);
+    }
+
     .analytics-toggle {
       width: 40px;
       height: 40px;
@@ -1875,18 +1907,17 @@
       <div class="sidebar-section">Quick Prompts</div>
 
       <ul class="quick-list" id="quick-list">
+        <li><button onclick="sendQuick('Tell me about Money Forward India as a company.')"><span
+              class="chip chip-info">Info</span>About MFI</button></li>
         <li><button onclick="sendQuick('What jobs are currently open at Money Forward India?')"><span
               class="chip chip-jobs">Jobs</span>Open positions</button></li>
-        <li><button onclick="sendQuick('What is the software engineer Intern role description?')"><span
-              class="chip chip-jobs">Jobs</span>Software Engineer Intern </button></li>
         <li><button onclick="sendQuick('How does Money Forward India handle personal data?')"><span
               class="chip chip-policy">Policy</span>Personal data handling</button></li>
         <li><button onclick="sendQuick('What is the privacy policy for users?')"><span
               class="chip chip-policy">Policy</span>Privacy policy</button></li>
         <li><button onclick="sendQuick('What security practices does Money Forward India follow?')"><span
               class="chip chip-policy">Policy</span>Security practices</button></li>
-        <li><button onclick="sendQuick('Tell me about Money Forward India as a company.')"><span
-              class="chip chip-info">Info</span>About MFI</button></li>
+
         <li><button onclick="sendQuick('What is the hiring process at Money Forward India?')"><span
               class="chip chip-info">Info</span>Hiring process</button></li>
         <li><button onclick="sendQuick('What technologies does Money Forward India use?')"><span
@@ -1925,13 +1956,13 @@
           <h1> me:mo <span>by Money Forward India</span></h1>
         </div>
         <div class="header-meta">
+          <button class="lang-toggle" id="lang-btn" onclick="toggleLanguage()" title="Toggle Language">EN</button>
           <button class="analytics-toggle" id="analyticsBtn" onclick="toggleAnalytics()" title="Agent Analytics">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
               stroke-linejoin="round">
               <path d="M18 20V10M12 20V4M6 20v-6" />
             </svg>
           </button>
-          <span class="model-badge" id="rag-status">Checking RAG…</span>
           <span id="msg-count">0 messages</span>
         </div>
       </div>
@@ -1940,7 +1971,8 @@
         <!-- Welcome screen -->
         <div class="welcome" id="welcome">
           <div class="welcome-icon">
-            <img src="https://corp.moneyforward.com/wp-content/uploads/2025/09/onboarding_long.gif" alt="me:mo animated mascot" />
+            <img src="https://corp.moneyforward.com/wp-content/uploads/2025/09/onboarding_long.gif"
+              alt="me:mo animated mascot" />
           </div>
           <h2>Hello! How can I <span class="orange">help</span>?</h2>
           <p>Ask me about jobs, company policies, careers, or anything about Money Forward India.</p>
@@ -2026,6 +2058,63 @@
     let isLoading = false;
     let sessionTotalTokens = 0;
     let sessionTotalCost = 0;
+    let currentLanguage = "English";
+
+    async function toggleLanguage() {
+      if (isLoading) return; // Prevent toggle during streaming
+
+      const btn = document.getElementById('lang-btn');
+      const targetLang = currentLanguage === "English" ? "Japanese" : "English";
+      currentLanguage = targetLang;
+      btn.textContent = targetLang === "Japanese" ? "JA" : "EN";
+
+      const bubbles = Array.from(document.querySelectorAll('.bubble:not(#typing .bubble)'));
+      const toTranslate = [];
+      const toTranslateIndices = [];
+
+      bubbles.forEach((b, i) => {
+        const oldLangKey = targetLang === "Japanese" ? 'data-lang-en' : 'data-lang-ja';
+        const targetLangKey = targetLang === "Japanese" ? 'data-lang-ja' : 'data-lang-en';
+
+        if (!b.hasAttribute(oldLangKey)) {
+          b.setAttribute(oldLangKey, b.innerHTML);
+        }
+
+        if (b.hasAttribute(targetLangKey)) {
+          b.innerHTML = b.getAttribute(targetLangKey);
+        } else {
+          toTranslate.push(b.innerHTML);
+          toTranslateIndices.push(i);
+          b.style.opacity = '0.5';
+        }
+      });
+
+      if (toTranslate.length === 0) return;
+
+      try {
+        const res = await fetch(`${API_BASE}/translate`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ texts: toTranslate, target_language: targetLang })
+        });
+        const data = await res.json();
+        if (data.translated_texts && data.translated_texts.length === toTranslate.length) {
+          toTranslateIndices.forEach((bubbleIdx, i) => {
+            const b = bubbles[bubbleIdx];
+            const translatedText = data.translated_texts[i];
+            b.innerHTML = translatedText;
+            b.style.opacity = '1';
+            const targetLangKey = targetLang === "Japanese" ? 'data-lang-ja' : 'data-lang-en';
+            b.setAttribute(targetLangKey, translatedText);
+          });
+        } else {
+          toTranslateIndices.forEach(idx => bubbles[idx].style.opacity = '1');
+        }
+      } catch (err) {
+        console.error("Translation failed", err);
+        toTranslateIndices.forEach(idx => bubbles[idx].style.opacity = '1');
+      }
+    }
 
     function toggleAnalytics() {
       const modal = document.getElementById('analyticsModal');
@@ -2471,7 +2560,7 @@
       row.appendChild(avatarEl);
       row.appendChild(bubbleWrap);
       messagesEl.appendChild(row);
-      
+
       const isNearBottom = messagesEl.scrollHeight - messagesEl.scrollTop - messagesEl.clientHeight < 150;
       if (isNearBottom) {
         messagesEl.scrollTop = messagesEl.scrollHeight;
@@ -2500,7 +2589,7 @@
       row.appendChild(av);
       row.appendChild(bubbleWrap);
       messagesEl.appendChild(row);
-      
+
       // Force scroll when user sends or typing starts
       messagesEl.scrollTop = messagesEl.scrollHeight;
     }
@@ -2528,7 +2617,7 @@
         const res = await fetch(`${API_BASE}/chat`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query, session_id: SESSION_ID })
+          body: JSON.stringify({ query, session_id: SESSION_ID, language: currentLanguage })
         });
 
         if (!res.ok) throw new Error(`Server error ${res.status}`);
@@ -2613,7 +2702,7 @@
               lastJobsBlock = formatted.jobsBlock;
               bubbleWrap.classList.add('has-jobs');
             }
-            
+
             const isNearBottom = messagesEl.scrollHeight - messagesEl.scrollTop - messagesEl.clientHeight < 150;
             if (isNearBottom) {
               messagesEl.scrollTop = messagesEl.scrollHeight;

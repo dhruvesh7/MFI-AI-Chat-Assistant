@@ -1,111 +1,137 @@
-# MFI Chatbot Setup Guide
+# MFI AI Chat Assistant — Setup Guide
 
-This comprehensive guide will walk you through setting up and running the MFI RAG Chatbot on your local machine.
+This guide walks you through setting up and running the MFI AI Chat Assistant on your local machine.
+
+---
 
 ## 1. Prerequisites
 
-Before starting, ensure you have the following installed and obtained:
+Before starting, ensure you have:
 
-- **Python 3.10 or higher**: Verify your installation by running `python --version` in your terminal.
-- **OpenAI API Key**: The chatbot relies on OpenAI's `text-embedding-3-small` for vector embeddings and `GPT-4o-mini` for generation and analytics.
-  - Obtain an API key by signing up at the [OpenAI Platform](https://platform.openai.com).
-  - Navigate to the **API keys** section in your dashboard and generate a new secret key.
+- **Python 3.10 or higher** — verify with `python --version`
+- **OpenAI API Key** — get one at [platform.openai.com](https://platform.openai.com)
 
-## 2. Environment Setup
+---
 
-It is strongly recommended to use a Python virtual environment to keep dependencies isolated.
+## 2. Create a Virtual Environment
 
-### On Windows:
+It is strongly recommended to isolate dependencies in a virtual environment.
+
+**Windows:**
 ```cmd
-
 python -m venv .venv
 .venv\Scripts\activate
-
 ```
 
-### On macOS / Linux:
+**macOS / Linux:**
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
 ```
 
+---
+
 ## 3. Install Dependencies
 
-With your virtual environment activated, install the required Python packages listed in `requirements.txt`:
+With your virtual environment activated:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-This will install packages like LangChain, ChromaDB, FastAPI, and OpenAI SDK.
+This installs LangChain, ChromaDB, FastAPI, OpenAI SDK, and all other required packages.
 
-## 4. Environment Variables Configuration
+---
 
-Create a file named `.env` in the root directory of the project (the same folder as this guide). Open it and add your OpenAI API key:
+## 4. Configure Environment Variables
+
+Create a `.env` file in the project root and add your OpenAI API key:
 
 ```env
 OPENAI_API_KEY=sk-your-actual-api-key-here
 ```
-> **Security Aspect:** Ensure this `.env` file is excluded from version control (it is usually in the `.gitignore` by default).
 
-## 5. Ingesting the Knowledge Base
+> **Security:** The `.env` file is listed in `.gitignore` and will not be committed to version control.
 
-The chatbot requires a local ChromaDB vector store to search for answers efficiently. You must process and ingest the documents situated in the `data/` directory.
+---
 
-Run the ingestion script:
+## 5. Ingest the Knowledge Base
+
+The chatbot searches a local ChromaDB vector store. You must process the documents in `data/` before running the server for the first time.
 
 ```bash
 python ingest.py
 ```
 
-- This script chunks the `.md` documents in the `data/` folder and generates vector embeddings.
-- The results are persistently stored in the `vector_db/` directory.
-- *Note:* Whenever you add or update files in `data/`, you should rerun this script. The live job listings are fetched dynamically and don't require ingestion.
+- Chunks all `.md` files in `data/` into 800-token segments (200-token overlap)
+- Generates vector embeddings using OpenAI `text-embedding-3-small`
+- Persists the index to the `vector_db/` directory
 
-## 6. Running the Chatbot Application
+> **Note:** Whenever you add or update files in `data/`, stop the server, rerun `python ingest.py`, and restart the server. Live job listings are fetched dynamically from the Zoho Recruit RSS feed and **do not require ingestion**.
 
-The application comes with two interfaces to interact with.
+---
 
-### Option A: Web API & UI (Recommended)
-This launches the FastAPI backend and serves the interactive HTML frontend.
+## 6. Start the Server
 
-**For local access (this computer only):**
+**Local access only:**
 ```bash
 uvicorn api:app --port 8000
 ```
-Once the server has started, open your web browser and navigate to:
-👉 [http://localhost:8000](http://localhost:8000)
 
-> **Pro Tip:** The new UI supports **Real-time Streaming** and **Agent Analytics**. You can monitor query latency, token usage, and costs by clicking the analytics icon (📈) in the header.
-
-**For network access (e.g., testing on your phone):**
-To allow other devices on your local Wi-Fi network to connect to the chatbot, bind the server to `0.0.0.0`:
+**Network access (e.g., test on your phone):**
 ```bash
 uvicorn api:app --host 0.0.0.0 --port 8000
 ```
-Find your computer's local network IP address (e.g., `192.168.x.x` by running `ipconfig` on Windows or `ifconfig` on macOS/Linux). Then, on your phone's browser, navigate to:
-👉 `http://<YOUR_IP_ADDRESS>:8000`
 
-> **Note:** Ensure your phone is on the exact same Wi-Fi network. If the page times out, check that your computer's firewall (like Windows Defender) allows inbound connections for port `8000`.
+Then open your browser and navigate to:
+👉 [http://localhost:8000](http://localhost:8000)
+
+For network access, find your local IP with `ipconfig` (Windows) or `ifconfig` (macOS/Linux) and open `http://<YOUR_IP>:8000` on any device on the same Wi-Fi network.
+
+> **Hot Reload (development):** Add the `--reload` flag to automatically pick up code changes without restarting manually:
+> ```bash
+> uvicorn api:app --host 0.0.0.0 --port 8000 --reload
+> ```
+
+---
+
+## 7. Using the Chat Assistant
+
+| Feature | How to use |
+|---------|-----------|
+| **Ask a question** | Type in the input box and press Enter or click Send |
+| **Language toggle** | Click `EN` / `JA` in the header to translate all messages instantly |
+| **Analytics** | Click the 📊 icon to view latency, tokens, and session cost |
+| **Refresh jobs** | Click "Refresh job listings" in the sidebar to reload live job data |
+| **Quick prompts** | Click any item in the sidebar to send a pre-set query |
 
 ---
 
-## 7. Managing the Knowledge Base
+## 8. Updating the Knowledge Base
 
-If you add new Markdown files to the `data/` folder or modify existing ones, the system won't see them automatically. You MUST:
-1. Stop the server (`Ctrl+C`).
-2. Run `python ingest.py` to update the vector database.
-3. Start the server again.
-
-The **Live Jobs Feed** does NOT require ingestion; it is fetched fresh every time the server starts or when you click "Refresh job listings" in the UI.
-
----
+1. Add or edit `.md` files in the `data/` directory
+2. Stop the server (`Ctrl+C`)
+3. Run `python ingest.py` to rebuild the vector index
+4. Restart the server
 
 ---
 
 ## 9. Verifying the Setup
 
-To make sure everything is working correctly, ask a question such as:
+Once the server is running, try asking:
+
 > *"What is Money Forward India's privacy policy?"*
 
-The chatbot should retrieve the context from your vectorized documents and provide a grounded response, completely free of generic AI hallucinations.
+The assistant should retrieve the relevant policy document and provide a grounded response. You can then click `JA` to translate the entire conversation to Japanese instantly.
+
+---
+
+## API Reference
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/chat` | Streaming SSE response to a query |
+| `POST` | `/translate` | Translate an array of HTML text fragments |
+| `POST` | `/refresh-jobs` | Re-fetch live job listings |
+| `GET` | `/health` | Server health check |
+| `GET` | `/` | Serve the frontend UI |

@@ -1,8 +1,8 @@
-# MFI RAG Chatbot — Project Summary
+# MFI AI Chat Assistant — Project Summary
 
 ## What It Does
 
-A production-ready Retrieval-Augmented Generation (RAG) chatbot built for **Money Forward India**. It answers natural-language questions about the company, its Privacy Policy, Security Policy, and live job openings — using only verified source documents, never hallucinating.
+A production-ready bilingual AI chat assistant for **Money Forward India**. It answers natural-language questions in **English or Japanese** about the company, its Privacy Policy, Security Policy, and live job openings — using Retrieval-Augmented Generation (RAG) grounded in verified source documents.
 
 ---
 
@@ -13,52 +13,49 @@ A production-ready Retrieval-Augmented Generation (RAG) chatbot built for **Mone
 | LLM | OpenAI GPT-4o-mini |
 | Embeddings | OpenAI `text-embedding-3-small` |
 | Vector Store | ChromaDB (local, persistent) |
-| RAG Framework | LangChain (`ConversationalRetrievalChain`, `BaseRetriever`) |
-| API | FastAPI |
-| Analytics | Custom `Analyse.py` (Real-time Latency, Tokens, Cost) |
-| Live Data | Zoho Recruit RSS Feed (HTTP) |
+| RAG Framework | LangChain (`BaseRetriever`, streaming via LLM) |
+| Memory | `ConversationBufferMemory` (per-session) |
+| API | FastAPI (SSE streaming) |
+| Translation | `/translate` endpoint — LLM-powered HTML-safe translation |
+| Analytics | Custom `Analyse.py` (Latency, Tokens, Cost) |
+| Live Data | Zoho Recruit RSS Feed |
 | Config | python-dotenv |
 
 ---
 
 ## Core Features
 
-**Hybrid Knowledge Retrieval**
-Static knowledge base (Markdown documents) combined with a dynamically fetched live jobs feed. The custom `SmartRetriever` decides at query time which sources to prioritise.
+### Bilingual Support (English ↔ Japanese)
+Real-time translation of all visible chat messages via the `EN/JA` header toggle. The `/translate` endpoint sends raw bubble HTML to the LLM with a strict prompt to preserve all tags, classes, and structure. Translations are cached in DOM attributes — toggling back and forth is instant with no additional API calls.
 
-**Streaming & Performance**
-- Real-time streaming response using Server-Sent Events (SSE).
-- In-memory `QueryCache` to provide instant answers for redundant queries.
-- `ConversationBufferMemory` to maintain context across multiple turns (per session).
+### Context-Aware Memory
+Each browser session maintains its own `ConversationBufferMemory`. When a follow-up question is detected (e.g., *"what experience is needed for this role?"*), the backend first reformulates it into a self-contained standalone question using the LLM and the stored chat history. This reformulated query is then sent to the retriever, ensuring accurate and relevant results.
 
-**Query Intelligence**
-- Expands short/ambiguous queries before vector search (e.g. "MFI" → "Money Forward India", "PII" → "Personal Information Protection Policy")
+### Hybrid Knowledge Retrieval
+Static Markdown knowledge base combined with a dynamically fetched live jobs feed. The custom `SmartRetriever` decides at query-time which sources to prioritise.
+
+### Streaming & Performance
+- Real-time token streaming via Server-Sent Events (SSE).
+- In-memory LRU `QueryCache` for instant responses to repeated queries (language-aware).
+- Query reformulation ensures follow-up questions are resolved correctly even for a cold cache.
+
+### Query Intelligence
+- Expands short/ambiguous queries before vector search (`"MFI"` → `"Money Forward India"`, `"PII"` → `"Personal Information Protection Policy"`)
 - Re-ranks retrieved chunks to surface privacy/security policy documents for relevant queries
 - Injects the live jobs document as the first context chunk for any career-related query
 
-**MMR Retrieval**
-Uses Maximal Marginal Relevance (fetch_k=24, k=8, λ=0.55) to balance relevance with diversity, avoiding redundant chunks in the LLM context.
-
-**Dual Interfaces**
-- Interactive CLI for local testing.
-- FastAPI HTTP API with a **premium, glassmorphic Web UI** featuring real-time typing effects, job card visualization, and mobile responsiveness.
-
-**Real-time Agent Analytics**
-- Integrated `Analyse.py` module to track and display session-wide and per-query statistics.
-- Tracks **Latency (ms)**, **Prompt/Completion Tokens**, and **Session Cost (USD)**.
-- Premium glassmorphic analytics modal accessible via the UI.
-
-**Live Job Sync**
-- Jobs are fetched from the MFI Zoho Recruit RSS feed on startup and on demand via `/refresh-jobs` — no re-ingestion required for career queries.
+### Real-time Agent Analytics
+- Tracks **Latency (ms)**, **Prompt/Completion Tokens**, and **Session Cost (USD)**
+- Accessible via a glassmorphic analytics modal in the UI (📊 icon)
 
 ---
 
 ## Data Flow
 
 ```
-Query → API layer (Session Memory + Cache)
+Query → API layer (Session Memory + LRU Cache check)
            ↓
-        Analytics Agent (Start Timer)
+        Query Reformulation (if history exists → LLM rewrites to standalone)
            ↓
         SmartRetriever
            ├─ Expand query terms
@@ -66,13 +63,18 @@ Query → API layer (Session Memory + Cache)
            ├─ Re-rank by topic (privacy / security / jobs)
            └─ Inject live jobs doc if job-related
                           ↓
-                ConversationalRetrievalChain
+                GPT-4o-mini (streaming, native language output)
                           ↓
-                GPT-4o-mini (Streaming output)
+                Save to session memory + update cache
                           ↓
-        Analytics Agent (Tokens + Cost Calculation)
+                SSE Stream (tokens + stats) → Web UI
+
+On Language Toggle:
+Frontend DOM → POST /translate (HTML array)
                           ↓
-                 SSE Stream (Text + Stats) → Web UI
+                LLM translates, preserves HTML structure
+                          ↓
+                DOM swap + cache in data attributes
 ```
 
 ---
@@ -80,22 +82,26 @@ Query → API layer (Session Memory + Cache)
 ## Design Decisions
 
 **Why a custom retriever instead of standard LangChain?**
-Standard retrievers treat all queries equally. MFI queries fall into clear topic buckets (company info, privacy, security, jobs), each with different optimal retrieval strategies. `SmartRetriever` encodes this domain knowledge directly.
+Standard retrievers treat all queries equally. MFI queries fall into clear topic buckets (company info, privacy, security, jobs), each requiring different retrieval strategies. `SmartRetriever` encodes this domain knowledge directly.
+
+**Why query reformulation before retrieval?**
+`ConversationBufferMemory` stores conversation history, but the retriever only sees the raw latest question. A follow-up like *"what is the salary for that role?"* would retrieve nothing useful. The reformulation step turns it into *"What is the salary for the AI Engineer role?"* before hitting the vector store.
 
 **Why MMR over similarity search?**
 Policy documents often have many near-duplicate chunks. MMR ensures the LLM receives a diverse, non-redundant context window, improving answer quality.
 
 **Why inject jobs as a Document instead of ingesting into ChromaDB?**
-Job listings change frequently. Injecting the live-fetched document directly at query time avoids stale embeddings and eliminates the need to re-ingest on every update.
+Job listings change frequently. Injecting the live-fetched document directly at query time avoids stale embeddings and eliminates the need to re-ingest on every job update.
 
 **Why GPT-4o-mini?**
-Sufficient capability for grounded Q&A over structured documents, at significantly lower cost than GPT-4o — appropriate for a demo/interview asset.
+Sufficient capability for grounded Q&A over structured documents, at significantly lower cost than GPT-4o.
 
 ---
 
 ## Limitations & Next Steps
 
 - Vector store is local; production would use a managed vector DB (Pinecone, Weaviate)
-- No authentication on the API endpoints
+- No authentication on API endpoints
 - Job descriptions are truncated at 12,000 characters to control context size
 - Could add hybrid search (BM25 + dense) for improved recall on exact-match queries
+- Translation could be parallelised per-bubble for faster large-conversation toggles

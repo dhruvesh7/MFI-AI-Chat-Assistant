@@ -48,6 +48,7 @@ RAG_CHAT_PROMPT = ChatPromptTemplate.from_messages(
             "||JOB|Data Engineer|Data|Chennai, India|Full-time|2-5 yrs exp|Python, Spark, GCP|https://link...|Not disclosed||\n"
             "For the Salary field: extract it from the job description if mentioned (e.g. '₹12–18 LPA', '$80k–$100k'). If not found, write 'Not disclosed'.\n"
             "Put 'Not specified' for any other missing field.\n\n"
+            "IMPORTANT: You MUST respond in the {language} language.\n\n"
             "CHAT HISTORY:\n{chat_history}\n\n"
             "CONTEXT:\n{context}",
         ),
@@ -128,6 +129,7 @@ from Analyse import analytics_agent
 class ChatRequest(BaseModel):
     query: str
     session_id: str | None = None
+    language: str | None = "English"
 
 
 class ChatResponse(BaseModel):
@@ -141,13 +143,24 @@ class RefreshResponse(BaseModel):
     message: str
 
 
+class TranslateRequest(BaseModel):
+    texts: list[str]
+    target_language: str
+
+
+class TranslateResponse(BaseModel):
+    translated_texts: list[str]
+
+
 @app.post("/chat")
 async def chat(req: ChatRequest) -> StreamingResponse:
     session_id = (req.session_id or "default").strip() or "default"
     start_time = analytics_agent.start_timer()
+    lang = req.language or "English"
 
     # Check cache first
-    cached_answer = query_cache.get(req.query)
+    cache_key = f"{lang}:{req.query}"
+    cached_answer = query_cache.get(cache_key)
     if cached_answer:
         async def cached_stream():
             latency_ms = analytics_agent.end_timer(start_time)
@@ -167,15 +180,27 @@ async def chat(req: ChatRequest) -> StreamingResponse:
     chat_history_messages = memory.chat_memory.messages
     chat_history_text = "\n".join([f"{'User' if i%2==0 else 'Assistant'}: {msg.content}" for i, msg in enumerate(chat_history_messages)])
 
+    search_query = req.query
+    if chat_history_messages:
+        from langchain_core.prompts import ChatPromptTemplate
+        reformulate_prompt = ChatPromptTemplate.from_messages([
+            ("system", "Given the following chat history and the user's latest question, formulate a standalone question that can be understood without the chat history. Do NOT answer the question, just reformulate it if needed, otherwise return it as is."),
+            ("human", "Chat History:\n{chat_history}\n\nLatest Question: {question}")
+        ])
+        reformulate_chain = reformulate_prompt | llm
+        res = await reformulate_chain.ainvoke({"chat_history": chat_history_text, "question": req.query})
+        search_query = res.content.strip()
+
     # Get context from retriever for streaming
-    docs = smart_retriever._get_relevant_documents(req.query)
+    docs = smart_retriever.invoke(search_query)
     context = "\n\n".join(d.page_content for d in docs)
 
     # Build prompt with context and history
     prompt = RAG_CHAT_PROMPT.format_messages(
         question=req.query, 
         context=context,
-        chat_history=chat_history_text
+        chat_history=chat_history_text,
+        language=lang
     )
     prompt_text = "\n".join([msg.content for msg in prompt])
 
@@ -198,7 +223,7 @@ async def chat(req: ChatRequest) -> StreamingResponse:
         memory.save_context({"question": req.query}, {"answer": full_response})
 
         # Cache the response
-        query_cache.put(req.query, full_response)
+        query_cache.put(cache_key, full_response)
 
         # Generate and send stats
         stats = analytics_agent.generate_stats(latency_ms, prompt_text, full_response)
@@ -207,6 +232,43 @@ async def chat(req: ChatRequest) -> StreamingResponse:
         yield "data: [DONE]\n\n"
 
     return StreamingResponse(event_generator(), media_type="text/event-stream")
+
+
+@app.post("/translate", response_model=TranslateResponse)
+async def translate_endpoint(req: TranslateRequest):
+    import json
+    from langchain_core.prompts import ChatPromptTemplate
+    
+    if not req.texts:
+        return TranslateResponse(translated_texts=[])
+    
+    prompt = ChatPromptTemplate.from_messages([
+        ("system", "You are an expert translator. Translate the following list of HTML/text fragments into {language}. Return a valid JSON array of strings containing ONLY the translated texts, in the exact same order. Preserve all HTML tags, CSS classes, structure, and placeholders exactly as they are. Do NOT wrap in markdown code blocks. Output only the JSON array."),
+        ("human", "{texts}")
+    ])
+    
+    texts_json = json.dumps(req.texts)
+    chain = prompt | llm
+    res = await chain.ainvoke({"language": req.target_language, "texts": texts_json})
+    
+    # Clean up markdown code block if present
+    content = res.content.strip()
+    if content.startswith("```json"):
+        content = content[7:]
+    elif content.startswith("```"):
+        content = content[3:]
+    if content.endswith("```"):
+        content = content[:-3]
+    content = content.strip()
+    
+    try:
+        translated = json.loads(content)
+        if isinstance(translated, list):
+            return TranslateResponse(translated_texts=translated)
+    except Exception as e:
+        print("Translation parse error:", e, content)
+    
+    return TranslateResponse(translated_texts=req.texts) # fallback
 
 
 @app.post("/refresh-jobs", response_model=RefreshResponse)

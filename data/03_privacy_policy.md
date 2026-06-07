@@ -1,5 +1,3 @@
-Personal Information Protection Policy
-
 - Privacy Policy
 
 Money Forward India Private Limited (hereinafter referred to as the “Company”), helps its parent company, Money Forward, Inc. (hereinafter referred to as the “Money Forward”) which has the mission of “Money Forward. Move your life forward” and aims to help people reduce their worries and concerns about money, improve their daily lives, and realize their dreams through its services. The Company’s ultimate goal is to help Money Forward to change the flow of money in Japan, revitalize society as a whole, and contribute to cultivating an environment where individuals can readily take on new challenges.

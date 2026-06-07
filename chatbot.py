@@ -107,7 +107,9 @@ def fetch_live_jobs():
             if t_el is None or not (t_el.text or "").strip():
                 continue
             title = _rss_html_to_plain(t_el.text or "")
-            link = (l_el.text or "").strip() if l_el is not None else JOBS_URL
+            import urllib.parse
+            raw_link = (l_el.text or "").strip() if l_el is not None else JOBS_URL
+            link = urllib.parse.quote(raw_link, safe=":/%?=&")
             raw_desc = d_el.text if d_el is not None and d_el.text else ""
             desc = html.unescape(raw_desc)
 

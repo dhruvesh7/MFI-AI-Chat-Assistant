@@ -1,6 +1,6 @@
-# Money Forward India — RAG Chatbot
+# Money Forward India — AI Chat Assistant
 
-An AI-powered chatbot for Money Forward India (MFI) built with **LangChain**, **ChromaDB**, and **OpenAI GPT-4o-mini**. It answers questions about the company, its privacy & security policies, and live job openings — grounding every response in verified source documents.
+An AI-powered bilingual chat assistant for **Money Forward India (MFI)** built with **LangChain**, **ChromaDB**, and **OpenAI GPT-4o-mini**. It answers questions about the company, its privacy & security policies, and live job openings — grounding every response in verified source documents, with real-time **English ↔ Japanese** translation.
 
 ---
 
@@ -11,18 +11,23 @@ User Query (Streaming via SSE)
     │
     ▼
 FastAPI (api.py)
-    ├── Memory Manager (ConversationBufferMemory per session)
-    ├── QueryCache (In-memory storage for redundant queries)
+    ├── Session Memory (ConversationBufferMemory per session)
+    ├── Query Reformulation (follow-up questions rewritten using chat history)
+    ├── QueryCache (LRU in-memory cache for redundant queries)
     ├── Analytics Agent (Analyse.py: Latency, Tokens, Cost)
     └── SmartRetriever (chatbot.py)
-         ├── Query expansion (expand acronyms, policy keywords)
+         ├── Query expansion (acronyms, policy keywords)
          ├── MMR vector search over ChromaDB (k=8, fetch_k=24)
          ├── Priority re-ranking for privacy/security topics
          └── Injects live jobs document for job-related queries
     │
     ▼
-LangChain ConversationalRetrievalChain
-    └── GPT-4o-mini → Streaming response + Stats → Web UI
+GPT-4o-mini (native language output + streaming)
+    └── SSE Stream → Web UI
+
+Real-time Translation (on toggle)
+    Frontend collects bubble HTML → POST /translate
+    └── LLM translates preserving all HTML structure → DOM swap
 ```
 
 ---
@@ -33,33 +38,27 @@ LangChain ConversationalRetrievalChain
 ├── data/                  # Markdown knowledge base (company, policies, jobs)
 ├── vector_db/             # Persisted ChromaDB embeddings (auto-created by ingest.py)
 ├── ingest.py              # Ingests data/ → vector_db/
-├── chatbot.py             # Core RAG logic + CLI
-├── api.py                 # FastAPI HTTP wrapper (Streaming SSE)
+├── chatbot.py             # Core RAG logic (SmartRetriever, job feed)
+├── api.py                 # FastAPI backend (Streaming SSE, /translate, /refresh-jobs)
 ├── Analyse.py             # Performance analytics & cost tracking
 ├── mfi_chatbot.html       # Premium Frontend UI (served by FastAPI)
-├── assets/                # Local UI assets (mfi_icon.png)
 ├── requirements.txt       # Python dependencies
 ├── .env                   # API keys (not committed)
-├── SETUP_GUIDE.md         # Detailed local setup instructions
-└── DEPLOYMENT_GUIDE.md    # Instructions for Cloud deployment (HF/Render)
+├── SETUP_GUIDE.md         # Local setup instructions
+└── SUMMARY.md             # Project summary & design decisions
 ```
 
 ---
 
-## Setup
+## Quick Start
 
-### 1. Prerequisites
-
-- Python 3.10+
-- OpenAI API key
-
-### 2. Install dependencies
+### 1. Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 3. Configure environment
+### 2. Configure environment
 
 Create a `.env` file in the project root:
 
@@ -67,75 +66,57 @@ Create a `.env` file in the project root:
 OPENAI_API_KEY=sk-...
 ```
 
-### 4. Prepare knowledge base
-
-Add your Markdown documents to the `data/` directory, then ingest them:
+### 3. Ingest knowledge base
 
 ```bash
 python ingest.py
 ```
 
-This chunks all `.md` files in `data/`, embeds them with OpenAI, and persists them to `vector_db/`.
+Chunks all `.md` files in `data/`, embeds them with OpenAI, and persists to `vector_db/`.
+
+### 4. Start the server
+
+```bash
+uvicorn api:app --host 0.0.0.0 --port 8000
+```
+
+Open `http://localhost:8000` in your browser.
+
+> Live job data is fetched dynamically from the MFI Zoho Recruit RSS feed — no re-ingestion needed for job queries.
 
 ---
 
-## Running
-
-### CLI mode
-
-```bash
-python chatbot.py
-```
-
-Commands inside the CLI:
-- Type any question to chat
-- `refresh jobs` — re-fetch live MFI job listings from the careers RSS feed
-- `exit` — quit
-
-### API + Web UI mode
-
-```bash
-uvicorn api:app --port 8000
-```
-
-Open `http://localhost:8000` in your browser to access the chat UI.
-
-#### API Endpoints
+## API Endpoints
 
 | Method | Path | Description |
 |--------|------|-------------|
 | `POST` | `/chat` | Send a query, get a streaming SSE grounded response |
-| `POST` | `/refresh-jobs` | Re-fetch live job listings |
+| `POST` | `/translate` | Translate an array of HTML fragments to English or Japanese |
+| `POST` | `/refresh-jobs` | Re-fetch live job listings from RSS feed |
 | `GET` | `/health` | Health check + job count |
 | `GET` | `/` | Serve the frontend HTML |
 
-**Example `/chat` response stream:**
-
-The `/chat` endpoint now returns a `text/event-stream` using Server-Sent Events (SSE). Each chunk is a JSON string containing the new token.
-
 ---
 
-## Key Components
+## Key Features
 
-### `ingest.py`
-Loads all `.md` files from `data/`, splits them into 800-token chunks (200 overlap), embeds with `OpenAIEmbeddings`, and persists to ChromaDB.
+### Bilingual Support (English ↔ Japanese)
+Toggle the `EN/JA` button in the header to instantly translate all visible chat messages. A dedicated `/translate` endpoint uses the LLM to translate HTML fragments while preserving all tags and structure. Translations are cached in the DOM so toggling back is instant.
 
-### `chatbot.py`
-- **`fetch_live_jobs()`** — Fetches and parses the MFI Zoho Recruit RSS feed, extracts title, department, location, and description for each listing.
-- **`jobs_to_doc()`** — Converts job listings into a single LangChain `Document` for injection into the retriever.
-- **`SmartRetriever`** — Custom `BaseRetriever` that:
-  - Expands queries (e.g., "MFI" → "Money Forward India") before vector search
-  - Prioritises privacy/security policy documents for relevant queries
-  - Prepends the live jobs document for career/role-related queries
+### Smart Memory & Follow-up Questions
+Each session has its own `ConversationBufferMemory`. Follow-up questions (e.g., *"what are the qualifications for this role?"*) are automatically reformulated into standalone queries using chat history before hitting the retriever — ensuring accurate context-aware retrieval.
 
-### `api.py`
-Thin FastAPI wrapper exposing the chatbot as an HTTP service. Loads the vector DB and jobs once on startup, handles SSE streaming, and integrates the `analytics_agent` for real-time monitoring.
+### SmartRetriever
+Custom `BaseRetriever` that:
+- Expands short/ambiguous queries (`"MFI"` → `"Money Forward India"`, `"PII"` → `"Personal Information Protection Policy"`)
+- Prioritises privacy/security policy documents for relevant queries
+- Injects the live jobs document as the first context chunk for career-related queries
 
-### `Analyse.py`
-Standalone agent that tracks the performance of every query. It calculates:
-- **Latency**: Time-to-first-token and total response time.
-- **Tokens**: Exact count of prompt and completion tokens via `tiktoken`.
-- **Cost**: Real-time USD cost calculation based on GPT-4o-mini pricing.
+### Real-time Agent Analytics
+Track query latency, prompt/completion token counts, and session cost via the analytics modal (📊 icon in the header).
+
+### Live Job Listings
+Job data is fetched fresh from the MFI Zoho Recruit RSS feed on startup and via the `/refresh-jobs` endpoint, rendered as interactive job cards in the UI.
 
 ---
 
@@ -154,10 +135,8 @@ Standalone agent that tracks the performance of every query. It calculates:
 ## Adding Knowledge
 
 1. Add or edit `.md` files in `data/`
-2. Re-run `python ingest.py` to rebuild the vector store
-3. Restart the server (or it will pick up the new `vector_db/` on next start)
-
-> Live job data is fetched dynamically from the MFI RSS feed — no re-ingestion needed for job queries.
+2. Run `python ingest.py` to rebuild the vector store
+3. Restart the server (picks up the new `vector_db/` on next start)
 
 ---
 
@@ -165,7 +144,7 @@ Standalone agent that tracks the performance of every query. It calculates:
 
 See `requirements.txt`. Key packages:
 
-- `langchain`, `langchain-community`, `langchain-openai`
+- `langchain`, `langchain-community`, `langchain-openai`, `langchain-classic`
 - `langchain-chroma`, `chromadb`
 - `fastapi`, `uvicorn`
-- `python-dotenv`, `requests`
+- `python-dotenv`, `requests`, `tiktoken`
