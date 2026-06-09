@@ -1,6 +1,6 @@
 # Money Forward India — AI Chat Assistant
 
-An AI-powered bilingual chat assistant for **Money Forward India (MFI)** built with **LangChain**, **ChromaDB**, and **OpenAI GPT-4o-mini**. It answers questions about the company, its privacy & security policies, and live job openings — grounding every response in verified source documents, with real-time **English ↔ Japanese** translation.
+AI-powered bilingual assistant for Money Forward India (MFI) that answers questions about the company, privacy & security policies, and live job openings. Built a Production Grade RAG Chat Assistant , it grounds every answer in verified source documents and supports real-time English  Japanese translation.
 
 ---
 
